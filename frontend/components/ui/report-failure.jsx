@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,21 +10,53 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+
+const devices = [
+  { id: "pralka", name: "Pralka", icon: "🧺" },
+  { id: "suszarka", name: "Suszarka", icon: "🌀" },
+  { id: "boisko", name: "Boisko", icon: "🏟️" },
+  { id: "kuchenka", name: "Kuchenka gazowa", icon: "🔥" },
+  { id: "piekarnik", name: "Piekarnik", icon: "♨️" },
+  { id: "lazienka", name: "Łazienka", icon: "🚿" },
+  { id: "winda", name: "Winda", icon: "🛗" },
+]
+
+const floorsEven = Array.from({ length: 7 }, (_, i) => (i + 1) * 2)
+const floorsOdd = Array.from({ length: 8 }, (_, i) => i * 2 + 1)
+const allFloors = Array.from({ length: 15 }, (_, i) => i + 1)
+
+const sportsFields = [
+  { name: "Piłka nożna", icon: "⚽" },
+  { name: "Siatkówka", icon: "🏐" },
+  { name: "Koszykówka", icon: "🏀" },
+]
 
 export default function ReportFailureModal({ open, onClose }) {
-  const [deviceName, setDeviceName] = useState("")
+  const [selectedDevice, setSelectedDevice] = useState("")
   const [description, setDescription] = useState("")
   const [location, setLocation] = useState("")
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    const finalLocation =
+      typeof location === "string"
+        ? location
+        : `${selectedDevice} ${location.number}, Piętro ${location.floor}`
+
     const failureReport = {
-      deviceName,
+      deviceName: selectedDevice,
+      location: finalLocation,
       description,
-      location,
     }
+
     console.log("Zgłoszona awaria:", failureReport)
+
     onClose()
+    setSelectedDevice("")
+    setDescription("")
+    setLocation("")
   }
 
   return (
@@ -36,13 +67,126 @@ export default function ReportFailureModal({ open, onClose }) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label>Nazwa urządzenia</label>
-            <Input
-              value={deviceName}
-              onChange={(e) => setDeviceName(e.target.value)}
-            />
+
+          <div className="flex flex-wrap gap-4 justify-center">
+            {devices.map(({ id, name, icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setSelectedDevice(name)
+                  setLocation("")
+                }}
+                className={`flex flex-col items-center p-4 border rounded-lg text-2xl transition ${
+                  selectedDevice === name ? 'border-primary' : 'border-muted'
+                }`}
+              >
+                <span>{icon}</span>
+                <span className="text-xs mt-1">{name}</span>
+              </button>
+            ))}
           </div>
+
+          {selectedDevice && (
+            <div>
+              {selectedDevice === "Boisko" ? (
+                <>
+                  <label>Typ boiska</label>
+                  <div className="flex gap-2">
+                    {sportsFields.map(({ name, icon }) => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => setLocation(name)}
+                        className={`border rounded p-2 flex-1 text-xl ${
+                          location === name ? 'border-primary' : 'border-muted'
+                        }`}
+                      >
+                        <span>{icon}</span>
+                        <div className="text-xs">{name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : selectedDevice === "Łazienka" ? (
+                <>
+                  <label>Numer pokoju</label>
+                  <Input
+                    placeholder="Np. 205"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
+                </>
+              ) : selectedDevice === "Winda" ? (
+                <>
+                  <label>Numer windy</label>
+                    <div className="flex gap-2">
+                    {[1, 2, 3, 4].map((nr) => (
+                        <button
+                        key={nr}
+                        type="button"
+                        onClick={() => setLocation(`Winda ${nr}`)}
+                        className={`border rounded p-2 w-full ${
+                            location === `Winda ${nr}` ? 'border-primary' : 'border-muted'
+                        }`}
+                        >
+                        🛗 {nr}
+                        </button>
+                    ))}
+                    </div>
+
+                </>
+              ) : selectedDevice === "Pralka" || selectedDevice === "Kuchenka gazowa" ? (
+                <>
+                  <label>Piętro</label>
+                  <select
+                    className="w-full border rounded p-2 bg-black text-white"
+                    value={location?.floor || ""}
+                    onChange={(e) => setLocation({ floor: e.target.value, number: "" })}
+                  >
+                    <option value="">Wybierz piętro</option>
+                    {(selectedDevice === "Pralka" ? floorsEven : allFloors).map((floor) => (
+                      <option key={floor} value={floor}>{floor}</option>
+                    ))}
+                  </select>
+
+                  {location?.floor && (
+                    <>
+                      <label>Numer {selectedDevice.toLowerCase()}</label>
+                      <div className="flex gap-2">
+                        {[1, 2, 3].map((nr) => (
+                          <button
+                            key={nr}
+                            type="button"
+                            onClick={() => setLocation({ ...location, number: nr })}
+                            className={`border rounded p-2 w-full ${
+                              location?.number == nr ? 'border-primary' : 'border-muted'
+                            }`}
+                          >
+                            {nr}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <label>Piętro</label>
+                  <select
+                    className="w-full border rounded p-2 bg-black text-white"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  >
+                    <option value="">Wybierz piętro</option>
+                    {(selectedDevice === "Suszarka" ? floorsOdd : allFloors).map((floor) => (
+                      <option key={floor} value={`Piętro ${floor}`}>Piętro {floor}</option>
+                    ))}
+                  </select>
+                </>
+              )}
+            </div>
+          )}
 
           <div>
             <label>Opis awarii</label>
@@ -52,20 +196,13 @@ export default function ReportFailureModal({ open, onClose }) {
             />
           </div>
 
-          <div>
-            <label>Lokalizacja</label>
-            <Input
-              placeholder="np. kuchnia, pokój 205"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            />
-          </div>
-
           <DialogFooter className="flex justify-end gap-2">
             <Button variant="outline" type="button" onClick={onClose}>
               Anuluj
             </Button>
-            <Button type="submit">Zgłoś</Button>
+            <Button type="submit" disabled={!selectedDevice || !location}>
+              Zgłoś
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
