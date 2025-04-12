@@ -1,13 +1,14 @@
 'use client'
 
-import React from "react"
-import GiveAwayModal from '@/components/ui/give-away';
-
+import React, {useState} from "react"
+import ReportFailureModal from '@/components/ui/report-failure'
 
 export default function App() {
-    return (
-      <div className="min-h-screen flex justify-center items-center">
-        <GiveAwayModal />
-      </div>
-    )
-  }
+  const [open, setOpen] = useState(true)
+
+  return (
+    <>
+      <ReportFailureModal open={open} onClose={() => setOpen(false)} />
+    </>
+  )
+}
