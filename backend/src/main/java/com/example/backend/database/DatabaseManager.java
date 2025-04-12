@@ -1,43 +1,101 @@
 package com.example.backend.database;
 
+import java.io.InputStream;
+import java.util.Map;
+
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-@Component
 @Getter
+@Component
 public class DatabaseManager {
 
-    private Firestore db;
-
-    private FirebaseConfig firebaseConfig;
+    private Firestore databaseHandler;
+    private CredentialFilePath credentialFilePath;
 
     @Autowired
-    public DatabaseManager(FirebaseConfig firebaseConfig) throws IOException {
-        this.firebaseConfig = firebaseConfig;
-
+    public DatabaseManager(CredentialFilePath credentialFilePath) throws Exception {
+        this.credentialFilePath = credentialFilePath;
         ClassLoader classLoader = getClass().getClassLoader();
-        InputStream serviceAccount = classLoader.getResourceAsStream(firebaseConfig.getFirebaseConfigPath());
-
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .build();
-
+        InputStream credentialFileStream = classLoader.getResourceAsStream(credentialFilePath.getFirebaseConfigPath());
+        FirebaseOptions options = FirebaseOptions.builder().
+                setCredentials(GoogleCredentials.fromStream(credentialFileStream)).build();
         if (FirebaseApp.getApps().isEmpty()) {
             FirebaseApp.initializeApp(options);
         }
 
-        this.db = FirestoreClient.getFirestore();
+        this.databaseHandler = FirestoreClient.getFirestore();
+
+    }
+    
+
+    public <T> T getDocumentData(
+            String collectionName, String documentId, String fieldName
+    ) throws Exception {
+        DocumentReference userDocumentReference = this.databaseHandler.collection(collectionName).document(documentId);
+        DocumentSnapshot snapshot;
+        Map<String, Object> userData;
+        try {
+            if (!userDocumentReference.get().get().exists()) {
+                System.out.println("There is no document with id " + documentId);
+                throw new Exception("No document with id " + documentId);
+            }
+
+            snapshot = userDocumentReference.get().get();
+            userData = snapshot.getData();
+            return userData != null ? (T) userData.get(fieldName) : null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-}
 
+    public void createDocumentWithData(
+            String collectionName, String documentId, Map<String, Object> fieldData
+    ) throws Exception {
+        CollectionReference collectionReference = this.databaseHandler.collection(collectionName);
+        if (!collectionReference.document(documentId).get().get().exists()) {
+            collectionReference.document(documentId).set(fieldData);
+        }
+    }
+
+
+    public <ObjectType> void createDocumentWithData(
+            String collectionName, String documentId, ObjectType object
+    ) throws Exception {
+        CollectionReference collectionReference = this.databaseHandler.collection(collectionName);
+        if (!collectionReference.document(documentId).get().get().exists()) {
+            collectionReference.document(documentId).set(object);
+        }
+    }
+
+
+    public <T> void updateDocumentFieldWithData(
+            String collectionName, String documentId, String fieldName, T newFieldData
+    ) throws Exception {
+        CollectionReference collectionReference = this.databaseHandler.collection(collectionName);
+        if (!collectionReference.document(documentId).get().get().exists()) {
+            collectionReference.document(documentId).update(fieldName, newFieldData);
+        }
+    }
+
+
+    public void updateDocumentData(
+            String collectionName, String documentId, Map<String, Object> fieldData
+    ) throws Exception {
+        CollectionReference collectionReference = this.databaseHandler.collection(collectionName);
+        if (!collectionReference.document(documentId).get().get().exists()) {
+            collectionReference.document(documentId).set(fieldData);
+        }
+    }
+}
