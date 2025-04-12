@@ -12,43 +12,38 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class BackendApplication implements CommandLineRunner {
 
-    private final DatabaseManager dbManager;
+    private final DatabaseManager databaseManager;
 
     @Autowired
-    public BackendApplication(DatabaseManager dbManager) {
-        this.dbManager = dbManager;
+    public BackendApplication(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
     }
 
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
-        try {
-            DatabaseManager databaseManager = new DatabaseManager("firestore-cred.json");
-            System.out.println(databaseManager.getUserName("uniqueUser"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
-    public void run(String[] args) throws IOException {
-        Firestore db = dbManager.getDb();
+    public void run(String[] args) throws Exception {
+        String name = databaseManager.getDocumentData("Users", "46e11608-a5e1-414b-8333-3e2d245677ff", "name");
+        System.out.println(name);
 
-        ApiFuture<QuerySnapshot> query = db.collection("Users").get();
-        try {
-            List<QueryDocumentSnapshot> documents = query.get().getDocuments();
-            System.out.println("siema" + documents.size());
-            for (QueryDocumentSnapshot doc : documents) {
-                System.out.println("ID: " + doc.getId());
-                System.out.println("Dane: " + doc.getData());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("name", "Jan");
+        hashMap.put("surname", "Masternak");
+        databaseManager.createDocumentWithData(
+                "Users",
+                "janmast",
+                hashMap
+        );
+
     }
 
 }
