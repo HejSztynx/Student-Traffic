@@ -89,11 +89,11 @@ export function AppSidebar({ ...props }) {
             name="Oddaj Żywność"
             isActive={pathname === "/food"}
           />
-          <SidebarMenuItem>
-            <SidebarMenuButton className="h-16 text-xl" onClick={() => setOpen(true)}>
-              Zgłoś awarię
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <SidebarItem
+            path="/report"
+            name="Zgłoś awarię"
+            isActive={pathname === "/report"}
+          />
           <ReportFailureModal open={open} onClose={() => setOpen(false)} />
         </SidebarMenu>
         <div className="mt-auto">
