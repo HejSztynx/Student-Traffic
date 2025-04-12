@@ -3,35 +3,18 @@
 import React, { useState } from "react";
 import { ReservationCard } from "./reservationCard";
 import JoinEventModal from "./join-event";
+import { toast } from "sonner";
 
 // Godziny: 6:00 - 22:00 co 2 godziny
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
 
-// Mock rezerwacji
-const reservations = [
-  {
-    title: "Trenujemy karne",
-    ownerName: "Tomek",
-    currentPlayers: 2,
-    maxPlayers: 2,
-    startTime: "14:00",
-    endTime: "15:30",
-  },
-  {
-    title: "Gramy meczycho",
-    ownerName: "Kuba",
-    currentPlayers: 5,
-    maxPlayers: 14,
-    startTime: "16:00",
-    endTime: "18:30",
-  },
-];
-
-export default function VerticalTimeline() {
+export default function VerticalTimeline({reservations}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
   const handleCardClick = (reservation) => {
+    if (reservation.currentPlayers >= reservation.maxPlayers) return;
+
     setSelectedReservation(reservation);
     setIsModalOpen(true);
   };
@@ -42,7 +25,8 @@ export default function VerticalTimeline() {
   };
 
   const handleConfirmJoin = () => {
-    console.log("Zapisano na event:", selectedReservation);
+    console.log(selectedReservation);
+    toast.success("Zapisano na event!");
     setIsModalOpen(false);
     setSelectedReservation(null);
   };
@@ -86,6 +70,10 @@ export default function VerticalTimeline() {
         <JoinEventModal
           onClose={handleCloseModal}
           onConfirm={handleConfirmJoin}
+          hasConfirm={
+            selectedReservation?.currentPlayers <
+            selectedReservation?.maxPlayers
+          }
         />
       )}
     </div>
