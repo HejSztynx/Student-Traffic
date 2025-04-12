@@ -34,6 +34,18 @@ public class DatabaseManager {
         this.databaseHandler = FirestoreClient.getFirestore();
 
     }
+
+
+    public boolean doesDocumentExist(
+            String collectionName, String documentId
+    )  {
+        try {
+            DocumentReference userDocumentReference = databaseHandler.collection(collectionName).document(documentId);
+            return (userDocumentReference.get().get().exists());
+        } catch (Exception e) {
+            return false;
+        }
+    }
     
 
     public <T> T getDocumentData(
