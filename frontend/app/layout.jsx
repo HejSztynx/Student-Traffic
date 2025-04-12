@@ -1,5 +1,21 @@
+import { Bell } from "lucide-react";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
+
+import { AppSidebar } from "@/components/app-sidebar";
+import { Button } from "@/components/ui/button";
+import { NotificationBadge } from "@/components/ui/notification-badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+import { DeviceUnavailable } from "@/components/device-unavailable";
+
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +38,34 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset>
+            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:h-4"
+              />
+              <NotificationBadge
+                className="ml-auto"
+                label="12"
+                variant="destructive"
+              >
+                <Link href={"/notifications"}>
+                  <Button type="button" variant="ghost">
+                    <Bell />
+                  </Button>
+                </Link>
+              </NotificationBadge>
+            </header>
+            <DeviceUnavailable />
+            <div className="sm:hidden flex flex-col items-center justify-center h-screen p-2">
+              {children}
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+        <Toaster richColors />
       </body>
     </html>
   );
