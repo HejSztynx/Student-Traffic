@@ -1,0 +1,30 @@
+name: Validate PR (Next.js build)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - frontend
+      - setup-forntend-ci
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # or your project's Node.js version
+
+      - name: cd into frontend
+        run: cd frontend # Adjust this if your Next.js app is in a different directory
+
+      - name: Install dependencies
+        run: npm ci # or `yarn install --frozen-lockfile`
+
+      - name: Build Next.js app
+        run: npm run build
