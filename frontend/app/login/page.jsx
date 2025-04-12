@@ -1,25 +1,52 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert('Wypełnij wszystkie pola!');
+      toast.info("Wypełnij wszystkie pola!");
       return;
     }
 
-    console.log('Logowanie:', { email, password });
-    // Tu możesz dodać auth API, Firebase, itp.
+    try {
+      const res = await fetch("http://localhost:8080/login/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: email, passedPassword: password }),
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error("Błąd logowania: " + errorText);
+        return;
+      }
+
+      const data = await res.json();
+      toast.success("Zalogowano pomyślnie!");
+      console.log("Logowanie udane:", data);
+
+      // Możesz zapisać token/session info jeśli trzeba
+
+      router.push("/");
+    } catch (err) {
+      console.error("Błąd połączenia:", err);
+      toast.error("Wystąpił błąd podczas logowania.");
+    }
   };
 
   return (
@@ -44,7 +71,7 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="••••• •••"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
