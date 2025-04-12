@@ -1,14 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import VerticalTimeline from '@/components/ui/eventTimeline';
+import VerticalTimeline from '@/components/ui/eventSchedule';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import AddEventModal from '@/components/ui/add-event';
 
 export default function ReservationPage() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   const handlePrevDay = () => {
     setSelectedDate((prev) => new Date(prev.getTime() - 24 * 60 * 60 * 1000));
@@ -16,6 +18,14 @@ export default function ReservationPage() {
 
   const handleNextDay = () => {
     setSelectedDate((prev) => new Date(prev.getTime() + 24 * 60 * 60 * 1000));
+  };
+
+  const handleCreateEvent = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -36,13 +46,20 @@ export default function ReservationPage() {
           </Button>
         </div>
 
-        <Button size="icon" className="rounded-full bg-black text-white hover:bg-gray-800">
+        <Button
+          size="icon"
+          className="rounded-full bg-black text-white hover:bg-gray-800"
+          onClick={handleCreateEvent}
+        >
           <Plus className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Timeline */}
       <VerticalTimeline selectedDate={selectedDate} />
+
+      {/* Modal */}
+      {isModalOpen && <AddEventModal onClose={handleCloseModal} />}
     </main>
   );
 }
