@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - frontend
-      - setup-forntend-ci
+      - setup-frontend-ci
 
 jobs:
   build:
