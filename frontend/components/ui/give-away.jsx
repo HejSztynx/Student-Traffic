@@ -1,6 +1,17 @@
 'use client'
 
 import React, { useState } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function GiveAwayModal({ onClose }) {
   const [itemName, setItemName] = useState("")
@@ -21,70 +32,72 @@ export default function GiveAwayModal({ onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl flex flex-col items-center gap-4 w-80 text-black"
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent
+        className="w-screen h-screen max-w-full max-h-full rounded-none p-8 overflow-y-auto"
+        hideClose
       >
-        <h2 className="text-xl font-bold text-green-800">Nowa propozycja</h2>
+        <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-green-800 text-center">
+              Nowa propozycja
+            </DialogTitle>
+          </DialogHeader>
 
-        <label className="flex flex-col items-center w-full">
-          Co oddajesz?
-          <input
-            type="text"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-            className="border border-gray-400 rounded-xl px-4 py-2 w-full"
-          />
-        </label>
+          <div className="space-y-2">
+            <Label htmlFor="item">Co oddajesz?</Label>
+            <Input
+              id="item"
+              type="text"
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
+              placeholder="np. makaron, słoik, czajnik"
+            />
+          </div>
 
-        <label className="flex flex-col items-center w-full">
-          Za co?
-          <input
-            type="text"
-            value={exchange}
-            onChange={(e) => setExchange(e.target.value)}
-            className="border border-gray-400 rounded-xl px-4 py-2 w-full"
-          />
-        </label>
+          <div className="space-y-2">
+            <Label htmlFor="exchange">Za co?</Label>
+            <Input
+              id="exchange"
+              type="text"
+              value={exchange}
+              onChange={(e) => setExchange(e.target.value)}
+              placeholder="np. nic, coś innego, jabłko"
+            />
+          </div>
 
-        <label className="flex flex-col items-center w-full">
-          Opis
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="border border-gray-400 rounded-xl px-4 py-2 w-full h-24 resize-none"
-          />
-        </label>
+          <div className="space-y-2">
+            <Label htmlFor="desc">Opis</Label>
+            <Textarea
+              id="desc"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Dodatkowe informacje"
+              className="resize-none min-h-[100px]"
+            />
+          </div>
 
-        <label className="flex flex-col items-center w-full">
-          Miejsce
-          <input
-            type="text"
-            placeholder="np. pokój 205, kuchnia"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            className="border border-gray-400 rounded-xl px-4 py-2 w-full"
-          />
-        </label>
+          <div className="space-y-2">
+            <Label htmlFor="loc">Miejsce</Label>
+            <Input
+              id="loc"
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="np. pokój 205"
+            />
+          </div>
 
-        <div className="flex gap-4 mt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="bg-gray-300 text-black px-4 py-2 rounded-xl"
-          >
-            Anuluj
-          </button>
-
-          <button
-            type="submit"
-            className="bg-green-700 text-white px-4 py-2 rounded-xl"
-          >
-            Dodaj
-          </button>
-        </div>
-      </form>
-    </div>
+          <DialogFooter className="pt-6 flex justify-between">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Anuluj
+            </Button>
+            <Button type="submit" className="bg-green-700 hover:bg-green-800">
+              Dodaj
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -33,10 +33,15 @@ export default function GiveAwayModal({ onClose }) {
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <DialogContent
+        className="w-screen h-screen max-w-full max-h-full rounded-none p-8 overflow-y-auto"
+        hideClose
+      >
+        <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
           <DialogHeader>
-            <DialogTitle className="text-white-800">Nowa propozycja</DialogTitle>
+            <DialogTitle className="text-2xl text-green-800 text-center">
+              Nowa propozycja
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-2">
@@ -57,7 +62,7 @@ export default function GiveAwayModal({ onClose }) {
               type="text"
               value={exchange}
               onChange={(e) => setExchange(e.target.value)}
-              placeholder="np. nic, inny produkt, karma dla kota 😺"
+              placeholder="np. nic, coś innego, jabłko"
             />
           </div>
 
@@ -67,8 +72,8 @@ export default function GiveAwayModal({ onClose }) {
               id="desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Dodatkowe informacje (np. data ważności)"
-              className="resize-none"
+              placeholder="Dodatkowe informacje"
+              className="resize-none min-h-[100px]"
             />
           </div>
 
@@ -79,11 +84,11 @@ export default function GiveAwayModal({ onClose }) {
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="np. pokój 205, kuchnia"
+              placeholder="np. pokój 205"
             />
           </div>
 
-          <DialogFooter className="pt-2 flex justify-between">
+          <DialogFooter className="pt-6 flex justify-between">
             <Button type="button" variant="outline" onClick={onClose}>
               Anuluj
             </Button>
