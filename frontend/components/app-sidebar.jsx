@@ -33,6 +33,14 @@ const data = {
           title: "Oddaj Zywność",
           url: "/food",
         },
+        {
+          title: "Wyloguj się",
+          url: "/logout",
+        },
+        {
+          title: "Zgłoś awarię",
+          url: "/report",
+        }
       ],
     },
   ],
@@ -62,7 +70,7 @@ export function AppSidebar({ ...props }) {
           </Link>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="flex flex-col justify-between h-full">
         <SidebarMenu>
           <SidebarItem
             path="/laundry"
@@ -79,7 +87,19 @@ export function AppSidebar({ ...props }) {
             name="Oddaj Żywność"
             isActive={pathname === "/food"}
           />
+          <SidebarItem
+            path="/report"
+            name="Zgłoś awarię"
+            isActive={pathname === "/report"}
+          />
         </SidebarMenu>
+        <div className="mt-auto">
+          <SidebarItem
+            path="/logout"
+            name="Wyloguj się"
+            isActive={pathname === "/logout"}
+          />
+        </div>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
