@@ -1,6 +1,16 @@
 'use client';
 
 import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 export default function AddEventModal({ onClose }) {
   const [title, setTitle] = useState("");
@@ -21,76 +31,72 @@ export default function AddEventModal({ onClose }) {
   };
 
   return (
-    <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white border border-gray-200 rounded-xl p-6 shadow-lg w-[90%] max-w-md animate-slideUp">
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <DialogHeader>
+            <DialogTitle>Dodaj nowy event</DialogTitle>
+          </DialogHeader>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 text-black"
-      >
-        <h2 className="text-xl font-bold text-center">Dodaj nowy event</h2>
+          <div className="space-y-2">
+            <Label htmlFor="title">Tytuł</Label>
+            <Input
+              id="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="np. Wieczorny mecz"
+            />
+          </div>
 
-        <label className="flex flex-col">
-          Tytuł
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="border border-gray-400 rounded-xl px-4 py-2"
-          />
-        </label>
+          <div className="space-y-2">
+            <Label htmlFor="max">Maksymalna liczba uczestników</Label>
+            <Input
+              id="max"
+              type="number"
+              value={maxParticipants}
+              onChange={(e) => setMaxParticipants(e.target.value)}
+              placeholder="np. 12"
+              className="w-24"
+            />
+          </div>
 
-        <label className="flex flex-col">
-          Maksymalna liczba uczestników
-          <input
-            type="number"
-            value={maxParticipants}
-            onChange={(e) => setMaxParticipants(e.target.value)}
-            className="border border-gray-400 rounded-xl px-4 py-2 w-24"
-          />
-        </label>
-
-        <div>
-          <p>Godzina</p>
-          <div className="flex gap-4">
-            <div className="flex flex-col">
-              Od:
-              <input
-                type="text"
-                placeholder="10:00"
-                value={startHour}
-                onChange={(e) => setStartHour(e.target.value)}
-                className="border border-gray-400 rounded-xl px-2 py-1 w-20 text-center"
-              />
-            </div>
-            <div className="flex flex-col">
-              Do:
-              <input
-                type="text"
-                placeholder="12:00"
-                value={endHour}
-                onChange={(e) => setEndHour(e.target.value)}
-                className="border border-gray-400 rounded-xl px-2 py-1 w-20 text-center"
-              />
+          <div className="space-y-2">
+            <Label>Godzina</Label>
+            <div className="flex gap-4">
+              <div className="space-y-1">
+                <Label htmlFor="start">Od</Label>
+                <Input
+                  id="start"
+                  type="text"
+                  placeholder="10:00"
+                  value={startHour}
+                  onChange={(e) => setStartHour(e.target.value)}
+                  className="w-24 text-center"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="end">Do</Label>
+                <Input
+                  id="end"
+                  type="text"
+                  placeholder="12:00"
+                  value={endHour}
+                  onChange={(e) => setEndHour(e.target.value)}
+                  className="w-24 text-center"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex justify-between mt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="bg-red-500 text-white px-4 py-2 rounded-xl"
-          >
-            Anuluj
-          </button>
-          <button
-            type="submit"
-            className="bg-green-500 text-white px-4 py-2 rounded-xl"
-          >
-            Dodaj
-          </button>
-        </div>
-      </form>
-    </div>
+          <DialogFooter className="pt-2">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Anuluj
+            </Button>
+            <Button type="submit">Dodaj</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
