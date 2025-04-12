@@ -97,23 +97,13 @@ export default function VerticalTimeline() {
   return (
     <div>
       <div className="flex items-center justify-center gap-2">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handlePrevDay}
-          className="text-black"
-        >
+        <Button variant="outline" size="icon" onClick={handlePrevDay}>
           <ChevronLeft className="w-4 h-4" />
         </Button>
         <Button className="bg-green-500 hover:bg-green-600 text-white">
           {format(selectedDate, "d MMMM yyyy", { locale: pl })}
         </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleNextDay}
-          className="text-black"
-        >
+        <Button variant="outline" size="icon" onClick={handleNextDay}>
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>

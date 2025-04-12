@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
+import { toast } from "sonner";
 
 // Generujemy godziny, co 2 godziny (np. 6:00, 8:00, 10:00, ...)
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`)
@@ -73,7 +74,8 @@ export default function VerticalTimeline() {
 
   const handleConfirm = () => {
     // Logika rezerwacji po potwierdzeniu
-    console.log(`Rezerwacja potwierdzona dla ${selectedMachine} o godzinie ${selectedTime}`)
+
+    toast.success(`Rezerwacja potwierdzona dla ${selectedMachine} o godzinie ${selectedTime}`)
     setIsDialogOpen(false)
   }
 
@@ -94,13 +96,13 @@ export default function VerticalTimeline() {
   return (
     <div>
         <div className="flex items-center justify-center gap-2">
-            <Button variant="outline" size="icon" onClick={handlePrevDay} className="text-black">
+            <Button variant="outline" size="icon" onClick={handlePrevDay}>
                 <ChevronLeft className="w-4 h-4" />
             </Button>
             <Button className="bg-green-500 hover:bg-green-600 text-white">
                 {format(selectedDate, 'd MMMM yyyy', { locale: pl })}
             </Button>
-            <Button variant="outline" size="icon" onClick={handleNextDay} className="text-black">
+            <Button variant="outline" size="icon" onClick={handleNextDay}>
                 <ChevronRight className="w-4 h-4" />
             </Button>
         </div>
