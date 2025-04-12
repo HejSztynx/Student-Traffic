@@ -16,7 +16,7 @@ export default function VerticalTimeline() {
   const machines = [
     {
       id: 1,
-      name: "Pralka 1",
+      name: "Suszarka 1",
       reservations: {
         "6:00": "free",
         "8:00": "reserved",
@@ -31,7 +31,7 @@ export default function VerticalTimeline() {
     },
     {
       id: 2,
-      name: "Pralka 2",
+      name: "Suszarka 2",
       reservations: {
         "6:00": "free",
         "8:00": "free",
@@ -46,7 +46,7 @@ export default function VerticalTimeline() {
     },
     {
       id: 3,
-      name: "Pralka 3",
+      name: "Suszarka 3",
       reservations: {
         "6:00": "reserved",
         "8:00": "free",
@@ -78,15 +78,14 @@ export default function VerticalTimeline() {
   }
 
   return (
-    <div className="grid grid-cols-[80px_1fr] gap-5">
+    <div className="grid grid-cols-[80px_1fr] gap-5 h-[700px] overflow-y-auto">
       {hours.map((hour) => (
         <React.Fragment key={hour}>
-          {/* Kolumna z godziną */}
           <div className="flex items-top justify-end pr-2 text-sm text-gray-500">
             {hour}
           </div>
 
-          {/* Wiersz z 3 slotami pralek */}
+          {/* Kontener z kartami pralek */}
           <div className="grid grid-cols-3 gap-2">
             {machines.map((machine) => (
               <WashingMachineCard

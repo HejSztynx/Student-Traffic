@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import VerticalTimeline from '@/components/ui/verticalTimeline';
+import VerticalTimeline from '@/components/ui/WasherTimeline';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
