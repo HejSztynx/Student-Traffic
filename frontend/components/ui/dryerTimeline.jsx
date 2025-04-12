@@ -3,6 +3,10 @@
 import React, { useState } from "react"
 import WashingMachineCard from "./washingMashineCard"
 import ConfirmationDialog from "./confirmDialog"
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { format } from 'date-fns';
+import { pl } from 'date-fns/locale';
 
 // Generujemy godziny, co 2 godziny (np. 6:00, 8:00, 10:00, ...)
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`)
@@ -77,35 +81,62 @@ export default function VerticalTimeline() {
     setIsDialogOpen(false)
   }
 
-  return (
-    <div className="grid grid-cols-[80px_1fr] gap-5 h-[700px] overflow-y-auto">
-      {hours.map((hour) => (
-        <React.Fragment key={hour}>
-          <div className="flex items-top justify-end pr-2 text-sm text-gray-500">
-            {hour}
-          </div>
+  const [selectedDate, setSelectedDate] = useState(new Date());
+    
+  const handlePrevDay = () => {
+    setSelectedDate((prev) => new Date(prev.getTime() - 24 * 60 * 60 * 1000));
+  };
+    
+  const handleNextDay = () => {
+    setSelectedDate((prev) => new Date(prev.getTime() + 24 * 60 * 60 * 1000));
+  };
 
-          {/* Kontener z kartami pralek */}
-          <div className="grid grid-cols-3 gap-2">
-            {machines.map((machine) => (
-              <WashingMachineCard
-                key={machine.id}
-                name={machine.name}
-                time={hour}
-                status={machine.reservations[hour]}
-                onClick={handleCardClick}
-              />
-            ))}
-          </div>
-        </React.Fragment>
-      ))}
-      <ConfirmationDialog
-        isOpen={isDialogOpen}
-        onConfirm={handleConfirm}
-        onCancel={handleCancel}
-        machineName={selectedMachine}
-        time={selectedTime}
-      />
+  return (
+    <div>
+        <div className="flex items-center justify-center gap-2">
+            <Button variant="outline" size="icon" onClick={handlePrevDay} className="text-black">
+                <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button className="bg-green-500 hover:bg-green-600 text-white">
+                {format(selectedDate, 'd MMMM yyyy', { locale: pl })}
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleNextDay} className="text-black">
+                <ChevronRight className="w-4 h-4" />
+            </Button>
+        </div>
+
+        <div className="mb-4"></div>
+
+        <div className="grid grid-cols-[80px_1fr] gap-5 h-[700px] overflow-y-auto">
+        {hours.map((hour) => (
+            <React.Fragment key={hour}>
+            <div className="flex items-top justify-end pr-2 text-sm text-gray-500">
+                {hour}
+            </div>
+
+            {/* Kontener z kartami pralek */}
+            <div className="grid grid-cols-3 gap-2">
+                {machines.map((machine) => (
+                <WashingMachineCard
+                    key={machine.id}
+                    name={machine.name}
+                    time={hour}
+                    status={machine.reservations[hour]}
+                    onClick={handleCardClick}
+                />
+                ))}
+            </div>
+            </React.Fragment>
+        ))}
+        <ConfirmationDialog
+            isOpen={isDialogOpen}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+            machineName={selectedMachine}
+            time={selectedTime}
+        />
+        </div>
     </div>
+    
   )
 }
