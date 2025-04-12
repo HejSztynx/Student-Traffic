@@ -10,9 +10,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 function LinkedButton({ href, text, className, machine }) {
+  let url = href;
+  if (machine === "dryer") {
+    url += `?machine=dryer`;
+  }
+
   return (
     <Button className={cn(className, "m-2 w-[90%]")}>
-      <Link href={`${href}?machine=${machine}`}>{text}</Link>
+      <Link href={url}>{text}</Link>
     </Button>
   );
 }

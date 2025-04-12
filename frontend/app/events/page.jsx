@@ -16,6 +16,7 @@ export default function Page() {
       <LinkedButton href={"/events/volleyball"} text="Siatkówka" />
       <LinkedButton href={"/events/basketball"} text="Koszykówka" />
       <LinkedButton href={"/events/gym"} text="Siłownia" />
+      <LinkedButton href={"/events/other"} text="Inne wydarzenia" />
     </>
   );
 }

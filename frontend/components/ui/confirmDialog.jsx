@@ -11,10 +11,10 @@ const ConfirmationDialog = ({ isOpen, onConfirm, onCancel, machineName, time }) 
           Czy potwierdzasz rezerwację {machineName} o godzinie {time}?
         </h2>
         <div className="flex justify-between">
-          <Button onClick={onConfirm} className="bg-green-500 text-white">
+          <Button onClick={onConfirm} className="bg-green-500">
             TAK
           </Button>
-          <Button onClick={onCancel} className="bg-red-500 text-white">
+          <Button onClick={onCancel} className="bg-red-500">
             NIE
           </Button>
         </div>
