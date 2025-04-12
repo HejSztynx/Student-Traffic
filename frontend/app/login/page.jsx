@@ -36,7 +36,7 @@ export default function LoginPage() {
         return;
       }
 
-      const data = await res.json();
+      const data = await res.text();
       toast.success("Zalogowano pomyślnie!");
       console.log("Logowanie udane:", data);
 
@@ -59,7 +59,7 @@ export default function LoginPage() {
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
-                type="email"
+                // type="email"
                 placeholder="adres@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
