@@ -1,6 +1,8 @@
 mvnw
 mvnw.cmd
 
+**/firestore-cred.json
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -34,3 +36,4 @@ build/
 
 ### VS Code ###
 .vscode/
+**/firestore-cred*.json
