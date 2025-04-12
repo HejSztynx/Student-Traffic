@@ -31,27 +31,29 @@ public class DatabaseManager {
         this.databaseHandler = FirestoreClient.getFirestore();
 
     }
+    
 
-    public String getUserName(String userId) {
-        DocumentReference userDocumentReference = this.databaseHandler.collection("Users").document(userId);
+    public <T> T getUserData(
+            String collectionName, String documentId, String fieldName, Class<T> typeSpecifier
+    ) throws Exception {
+        DocumentReference userDocumentReference = this.databaseHandler.collection(collectionName).document(documentId);
         DocumentSnapshot snapshot;
         Map<String, Object> userData;
         try {
             if (!userDocumentReference.get().get().exists()) {
-                System.out.println("There is no user with id " + userId);
-                throw new Exception("No user with id " + userId);
+                System.out.println("There is no document with id " + documentId);
+                throw new Exception("No document with id " + documentId);
             }
 
             snapshot = userDocumentReference.get().get();
             userData = snapshot.getData();
-            return userData != null ? (String) userData.get("name") : null;
+            return userData != null ? (T) userData.get(fieldName) : null;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
-
     }
 
 }
