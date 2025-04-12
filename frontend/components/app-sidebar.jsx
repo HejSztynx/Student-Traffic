@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import ReportFailureModal from "./ui/report-failure";
 
 // This is sample data.
 const data = {
@@ -49,16 +50,17 @@ const data = {
 function SidebarItem({ path, name, isActive }) {
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton className="h-16" asChild isActive={isActive}>
-        <Link className="text-xl" href={path}>
+      <Link href={path}>
+        <SidebarMenuButton className="h-16 text-xl" isActive={isActive}>
           {name}
-        </Link>
-      </SidebarMenuButton>
+        </SidebarMenuButton>
+      </Link>
     </SidebarMenuItem>
   );
 }
 
 export function AppSidebar({ ...props }) {
+  const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
 
   return (
@@ -87,11 +89,12 @@ export function AppSidebar({ ...props }) {
             name="Oddaj Żywność"
             isActive={pathname === "/food"}
           />
-          <SidebarItem
-            path="/report"
-            name="Zgłoś awarię"
-            isActive={pathname === "/report"}
-          />
+          <SidebarMenuItem>
+            <SidebarMenuButton className="h-16 text-xl" onClick={() => setOpen(true)}>
+              Zgłoś awarię
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <ReportFailureModal open={open} onClose={() => setOpen(false)} />
         </SidebarMenu>
         <div className="mt-auto">
           <SidebarItem
