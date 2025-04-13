@@ -45,6 +45,7 @@ public class DatabaseManager {
     }
 
 
+
     public boolean doesDocumentExist(
             String collectionName, String documentId
     )  {
@@ -174,4 +175,34 @@ public class DatabaseManager {
             collectionReference.document(documentId).set(fieldData);
         }
     }
+
+
+//    public <T> List<T> getDocumentsWhereEqualsTo(
+//            String collectionName, String field, Object value, Class<T> type
+//    ) throws Exception {
+//        List<T> result = new ArrayList<>();
+//        ApiFuture<QuerySnapshot> future = databaseHandler.collection(collectionName)
+//                .whereEqualTo(field, value)
+//                .get();
+//
+//        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+//
+//        for (QueryDocumentSnapshot doc : documents) {
+//            T obj = doc.toObject(type);
+//            result.add(obj);
+//        }
+//
+//        return result;
+//    }
+
+    public <T> Query getDocumentsWhereFieldsEqualTo(
+            String collectionName, String field, T desiredFieldValue
+    ) throws Exception {
+        CollectionReference collectionReference = databaseHandler.collection(collectionName);
+
+        return collectionReference.whereEqualTo(field, desiredFieldValue);
+
+    }
+
+
 }
