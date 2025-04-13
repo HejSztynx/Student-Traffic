@@ -56,10 +56,13 @@ public class ObjectService {
         return result;
     }
 
+    public boolean changeStatus(String objectId, ObjectStatus objectStatus) {
+        return objectRepository.setStatus(objectId, objectStatus);
+    }
+
     private Map<String, String> generateReservationMap(
             List<ReservationDto> reservations, LocalDate date) {
 
-        // Zdefiniuj godziny, które mają się pojawić na mapie
         List<LocalTime> slots = List.of(
                 LocalTime.of(6, 0),
                 LocalTime.of(8, 0),
@@ -72,11 +75,11 @@ public class ObjectService {
                 LocalTime.of(22, 0)
         );
 
-        Map<String, String> result = new LinkedHashMap<>(); // zachowuje kolejność
+        Map<String, String> result = new LinkedHashMap<>();
 
         for (LocalTime slotTime : slots) {
             LocalDateTime slotStart = date.atTime(slotTime);
-            LocalDateTime slotEnd = slotStart.plusHours(2); // załóżmy slot 2-godzinny
+            LocalDateTime slotEnd = slotStart.plusHours(2);
 
             boolean isReserved = reservations.stream().anyMatch(res ->
 

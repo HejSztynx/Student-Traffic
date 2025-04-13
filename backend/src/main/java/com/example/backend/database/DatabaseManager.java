@@ -167,8 +167,12 @@ public class DatabaseManager {
             String collectionName, String documentId, String fieldName, T newFieldData
     ) throws Exception {
         CollectionReference collectionReference = this.databaseHandler.collection(collectionName);
-        if (!collectionReference.document(documentId).get().get().exists()) {
-            collectionReference.document(documentId).update(fieldName, newFieldData);
+        DocumentReference docRef = collectionReference.document(documentId);
+
+        if (docRef.get().get().exists()) {
+            docRef.update(fieldName, newFieldData);
+        } else {
+            throw new Exception("Document with ID " + documentId + " does not exist.");
         }
     }
 
