@@ -35,7 +35,7 @@ export function AppSidebar({ ...props }) {
     <Sidebar {...props}>
       <SidebarHeader className="flex items-center justify-between px-4 py-2 border-b mb-[40%]">
         <div className="flex items-center gap-2">
-          <Link href="/">
+          <Link href="/app">
             <h1 className="text-2xl font-bold">Student Traffic</h1>
           </Link>
         </div>
@@ -43,24 +43,24 @@ export function AppSidebar({ ...props }) {
       <SidebarContent className="flex flex-col justify-between h-full">
         <SidebarMenu>
           <SidebarItem
-            path="/laundry"
+            path="/app/laundry"
             name="Pralnia / Suszarnia"
-            isActive={pathname === "/laundry"}
+            isActive={pathname === "/app/laundry"}
           />
           <SidebarItem
-            path="/events"
+            path="/app/events"
             name="Eventy"
-            isActive={pathname === "/events"}
+            isActive={pathname === "/app/events"}
           />
           <SidebarItem
-            path="/food"
+            path="/app/food"
             name="Oddaj Żywność"
-            isActive={pathname === "/food"}
+            isActive={pathname === "/app/food"}
           />
           <SidebarItem
-            path="/report"
+            path="/app/report"
             name="Zgłoś awarię"
-            isActive={pathname === "/report"}
+            isActive={pathname === "/app/report"}
           />
         </SidebarMenu>
         <SidebarFooter>
