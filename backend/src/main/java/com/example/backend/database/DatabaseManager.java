@@ -143,6 +143,10 @@ public class DatabaseManager {
         return result;
     }
 
+    public List<QueryDocumentSnapshot> getAllDocumentsFromCollection(String collectionName) throws Exception {
+        return databaseHandler.collection(collectionName).get().get().getDocuments();
+    }
+
     public void createDocumentWithData(
             String collectionName, String documentId, Map<String, Object> fieldData
     ) throws Exception {
