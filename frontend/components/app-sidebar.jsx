@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import useUserStore from "@/lib/store/userStore";
 
 import {
   Sidebar,
@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { set } from "date-fns";
 
 function SidebarItem({ path, name, isActive }) {
   return (
@@ -28,8 +29,14 @@ function SidebarItem({ path, name, isActive }) {
 }
 
 export function AppSidebar({ ...props }) {
-  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
   const pathname = usePathname();
+  const { setUser } = useUserStore();
+
+  const handleLogout = () => {
+    setUser("", "");
+    router.replace("/");
+  };
 
   return (
     <Sidebar {...props}>
@@ -64,11 +71,9 @@ export function AppSidebar({ ...props }) {
           />
         </SidebarMenu>
         <SidebarFooter>
-          <Link href="/logout">
-            <SidebarMenuButton className="h-16 text-xl" >
-              Wyloguj się
-            </SidebarMenuButton>
-          </Link>
+          <SidebarMenuButton className="h-16 text-xl" onClick={handleLogout}>
+            Wyloguj się
+          </SidebarMenuButton>
         </SidebarFooter>
       </SidebarContent>
       <SidebarRail />

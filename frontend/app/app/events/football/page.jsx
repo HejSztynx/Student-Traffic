@@ -9,8 +9,8 @@ const reservations = [
     ownerName: "Kuba",
     currentPlayers: 5,
     maxPlayers: 51,
-    startTime: "8:00",
-    endTime: "10:00",
+    startTime: "14:00",
+    endTime: "16:00",
     date: new Date("2025-04-13"),
   },
 ];
