@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ReservationCard } from "./reservationCard";
 import JoinEventModal from "./join-event";
 import AddEventModal from "./add-event";
+import RemoveEvent  from "./remove-event";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
@@ -22,6 +23,8 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [clickedTime, setClickedTime] = useState("");
+  const [eventToRemove, setEventToRemove] = useState(null);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
   const filteredReservations = reservations.filter(
     (res) => new Date(res.date).toDateString() === selectedDate.toDateString()
@@ -60,7 +63,7 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
       {
         ...newEvent,
         date: selectedDate,
-        ownerName: "Tomek",
+        ownerName: "Tomek", // auth
       },
     ]);
     toast.success("Dodano nowy event!");
@@ -86,6 +89,20 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
     if (nextDate <= maxDate) {
       setSelectedDate(nextDate)
     }
+  }
+
+  const handleRemoveEvent = (reservation) => {
+    if (isPastTime(reservation.startTime)) {
+      return toast.error("Nie można usunąć wydarzenia, które już się rozpoczęło.");
+    }
+    setEventToRemove(reservation);
+    setIsRemoveDialogOpen(true);
+  }
+  const handleConfirmRemove = () => {
+    setReservations((prev) => prev.filter(res => res !== eventToRemove));
+    toast.success("Usunięto event!");
+    setIsRemoveDialogOpen(false);
+    setEventToRemove(null);
   }
 
   const isPastTime = (hour) => {
@@ -140,7 +157,10 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
                     onClick={() => handleCardClick(reservation)}
                     className="cursor-pointer"
                   >
-                    <ReservationCard {...reservation} />
+                    <ReservationCard
+                      {...reservation}
+                      onDelete={() => handleRemoveEvent(reservation)}
+                    />
                   </div>
                 ) : isPastTime(hour) ? (
                   <div className="h-full border border-dashed border-red-300 rounded-xl flex items-center justify-center text-sm text-red-500">
@@ -175,6 +195,13 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
           onClose={() => setIsAddModalOpen(false)}
           onSubmit={handleAddEvent}
           defaultStartTime={clickedTime}
+        />
+      )}
+      {isRemoveDialogOpen && (
+        <RemoveEvent
+          open={isRemoveDialogOpen}
+          onClose={() => setIsRemoveDialogOpen(false)}
+          onConfirm={handleConfirmRemove}
         />
       )}
     </div>
