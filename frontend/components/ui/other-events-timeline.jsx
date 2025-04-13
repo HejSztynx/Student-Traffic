@@ -9,6 +9,9 @@ import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import AddOtherEventModal from "./add-other-event-modal"
 import { toast } from "sonner"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+
 
 export default function OtherEventsTimeline({ title }) {
   const router = useRouter()
@@ -27,12 +30,13 @@ export default function OtherEventsTimeline({ title }) {
 
   const handleNextDay = () => {
     const nextDate = new Date(selectedDate.getTime() + 86400000)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const maxDate = new Date(today.getTime() + 7 * 86400000)
-    if (nextDate <= maxDate) {
-      setSelectedDate(nextDate)
-    }
+    // const today = new Date()
+    // today.setHours(0, 0, 0, 0)
+    // const maxDate = new Date(today.getTime() + 7 * 86400000)
+    // if (nextDate <= maxDate) {
+    //   setSelectedDate(nextDate)
+    // }
+    setSelectedDate(nextDate)
   }
 
   const handleAddEvent = (newEvent) => {
@@ -68,18 +72,42 @@ export default function OtherEventsTimeline({ title }) {
           <ChevronLeft className="w-4 h-4" />
         </Button>
 
-        <Button className="bg-green-500 hover:bg-green-600 text-white">
+        {/* <Button className="bg-green-500 hover:bg-green-600 text-white">
           {format(selectedDate, "d MMMM yyyy", { locale: pl })}
-        </Button>
+        </Button> */}
+
+        <Popover>
+        <PopoverTrigger asChild>
+            <Button className="bg-green-500 hover:bg-green-600 text-white">
+            {format(selectedDate, "d MMMM yyyy", { locale: pl })}
+            </Button>
+        </PopoverTrigger>
+
+        <PopoverContent className="p-0" align="center">
+            <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => setSelectedDate(date)}
+            initialFocus
+            disabled={(date) => {
+                const today = new Date()
+                today.setHours(0, 0, 0, 0)
+                return date < today
+            }}
+            />
+        </PopoverContent>
+        </Popover>
+
+
 
         <Button
           variant="outline"
           size="icon"
           onClick={handleNextDay}
-          disabled={
-            selectedDate.toDateString() ===
-            new Date(new Date().getTime() + 10 * 86400000).toDateString()
-          }
+        //   disabled={
+        //     selectedDate.toDateString() ===
+        //     new Date(new Date().getTime() + 10 * 86400000).toDateString()
+        //   }
         >
           <ChevronRight className="w-4 h-4" />
         </Button>

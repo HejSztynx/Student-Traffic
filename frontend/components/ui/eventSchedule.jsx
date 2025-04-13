@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
-import useUserStore from "@/lib/store/userStore";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
 
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
 
@@ -91,7 +92,7 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
   
-    const maxDate = new Date(today.getTime() + 7 * 86400000) // dzisiaj + 3 dni
+    const maxDate = new Date(today.getTime() + 8 * 86400000) // dzisiaj + 3 dni
   
     if (nextDate <= maxDate) {
       setSelectedDate(nextDate)
@@ -143,9 +144,38 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <Button className="bg-green-500 text-white">
-          {format(selectedDate, "d MMMM yyyy", { locale: pl })}
-        </Button>
+        
+        
+        <Popover>
+        <PopoverTrigger asChild>
+          <Button className="bg-green-500 hover:bg-green-600 text-white">
+            {format(selectedDate, "d MMMM yyyy", { locale: pl })}
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent className="p-0" align="center">
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => setSelectedDate(date)}
+            initialFocus
+            disabled={(date) => {
+              const today = new Date()
+              today.setHours(0, 0, 0, 0)
+
+              const maxDate = new Date()
+              maxDate.setDate(today.getDate() + 8)
+              maxDate.setHours(0, 0, 0, 0)
+
+              return date < today || date >= maxDate
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+
+
+
+
         <Button variant="outline" size="icon" onClick={handleNextDay}>
           <ChevronRight className="w-4 h-4" />
         </Button>
