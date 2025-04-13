@@ -52,10 +52,9 @@ Projekt składa się z dwóch głównych części:
 
 | Część       | Technologia  | Opis                                          |
 |-------------|--------------|-----------------------------------------------|
-| Frontend    | ⚛️ React Native + shadcn/ui | Aplikacja mobilna na Android/iOS             |
+| Frontend    | ⚛️ React + shadcn/ui | Aplikacja webowa            |
 | Backend     | ☕ Java | API REST, logika biznesowa, obsługa bazy danych   |
 | Baza danych | 🔥 Firebase | Przechowywanie danych użytkowników i ogłoszeń  |
-| Powiadomienia push | 📲 Firebase Cloud Messaging | Wysyłanie powiadomień push do aplikacji  |
 
 ---  
 
