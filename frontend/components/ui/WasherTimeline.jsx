@@ -1,102 +1,64 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { pl } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useState } from "react";
-import { toast } from "sonner";
-import ConfirmationDialog from "./confirmDialog";
-import WashingMachineCard from "./washingMashineCard";
+import React, { useState } from "react"
+import { useRouter } from "next/navigation"
+import WashingMachineCard from "./washingMashineCard"
+import ConfirmationDialog from "./confirmDialog"
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
+import { format } from "date-fns"
+import { pl } from "date-fns/locale"
+import { toast } from "sonner"
 
-// Generujemy godziny, co 2 godziny (np. 6:00, 8:00, 10:00, ...)
-const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
+// Godziny co 2h
+const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`)
 
-export default function VerticalTimeline() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedMachine, setSelectedMachine] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
+export default function VerticalTimeline({ title, machines = []}) {
+  const router = useRouter()
 
-  // Maszyny i ich rezerwacje na godzinach
-  const machines = [
-    {
-      id: 1,
-      name: "Pralka 1",
-      reservations: {
-        "6:00": "free",
-        "8:00": "reserved",
-        "10:00": "reserved",
-        "12:00": "free",
-        "14:00": "free",
-        "16:00": "reserved",
-        "18:00": "free",
-        "20:00": "free",
-        "22:00": "free",
-      },
-    },
-    {
-      id: 2,
-      name: "Pralka 2",
-      reservations: {
-        "6:00": "free",
-        "8:00": "free",
-        "10:00": "reserved",
-        "12:00": "reserved",
-        "14:00": "free",
-        "16:00": "free",
-        "18:00": "free",
-        "20:00": "reserved",
-        "22:00": "free",
-      },
-    },
-    {
-      id: 3,
-      name: "Pralka 3",
-      reservations: {
-        "6:00": "reserved",
-        "8:00": "free",
-        "10:00": "free",
-        "12:00": "free",
-        "14:00": "reserved",
-        "16:00": "free",
-        "18:00": "free",
-        "20:00": "free",
-        "22:00": "reserved",
-      },
-    },
-  ];
+  // const [reservations, setReservations] = useState(machines);
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedMachine, setSelectedMachine] = useState("")
+  const [selectedTime, setSelectedTime] = useState("")
+  const [selectedDate, setSelectedDate] = useState(new Date())
+
+ 
 
   const handleCardClick = (machineName, time) => {
-    setSelectedMachine(machineName);
-    setSelectedTime(time);
-    setIsDialogOpen(true);
-  };
+    setSelectedMachine(machineName)
+    setSelectedTime(time)
+    setIsDialogOpen(true)
+  }
 
   const handleConfirm = () => {
-    // Logika rezerwacji po potwierdzeniu
-    toast.success(
-      `Rezerwacja potwierdzona dla ${selectedMachine} o godzinie ${selectedTime}`
-    );
-    setIsDialogOpen(false);
-  };
+    toast.success(`Rezerwacja potwierdzona dla ${selectedMachine} o ${selectedTime}`)
+    setIsDialogOpen(false)
+  }
 
   const handleCancel = () => {
-    setIsDialogOpen(false);
-  };
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
+    setIsDialogOpen(false)
+  }
 
   const handlePrevDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() - 24 * 60 * 60 * 1000));
-  };
+    setSelectedDate((prev) => new Date(prev.getTime() - 86400000))
+  }
 
   const handleNextDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() + 24 * 60 * 60 * 1000));
-  };
+    setSelectedDate((prev) => new Date(prev.getTime() + 86400000))
+  }
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-2">
+      {/* Nagłówek z tytułem i strzałką cofania */}
+      <div className="flex items-center gap-2 mb-4">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <h1 className="text-lg font-semibold">{title}</h1>
+      </div>
+
+      {/* Data */}
+      <div className="flex items-center justify-center gap-2 mb-4">
         <Button variant="outline" size="icon" onClick={handlePrevDay}>
           <ChevronLeft className="w-4 h-4" />
         </Button>
@@ -108,16 +70,13 @@ export default function VerticalTimeline() {
         </Button>
       </div>
 
-      <div className="mb-4"></div>
-
-      <div className="grid grid-cols-[80px_1fr] gap-5 h-[650px] overflow-y-auto">
+      {/* Timeline */}
+      <div className="grid grid-cols-[80px_1fr] gap-5 h-[700px] overflow-y-auto">
         {hours.map((hour) => (
           <React.Fragment key={hour}>
             <div className="flex items-top justify-end pr-2 text-sm text-gray-500">
               {hour}
             </div>
-
-            {/* Kontener z kartami pralek */}
             <div className="grid grid-cols-3 gap-2">
               {machines.map((machine) => (
                 <WashingMachineCard
@@ -131,6 +90,8 @@ export default function VerticalTimeline() {
             </div>
           </React.Fragment>
         ))}
+
+        {/* Modal potwierdzenia */}
         <ConfirmationDialog
           isOpen={isDialogOpen}
           onConfirm={handleConfirm}
@@ -140,5 +101,6 @@ export default function VerticalTimeline() {
         />
       </div>
     </div>
-  );
+  )
 }
+
