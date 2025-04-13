@@ -40,12 +40,25 @@ export default function VerticalTimeline({ title, machines = []}) {
   }
 
   const handlePrevDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() - 86400000))
+    const prevDate = new Date(selectedDate.getTime() - 86400000)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (prevDate >= today) {
+      setSelectedDate(prevDate)
+    }
   }
-
+  
   const handleNextDay = () => {
     setSelectedDate((prev) => new Date(prev.getTime() + 86400000))
   }
+
+  const isPastEvent = (eventDate, endTime) => {
+    const [hours, minutes] = endTime.split(":").map(Number);
+    const eventEnd = new Date(eventDate);
+    eventEnd.setHours(hours, minutes, 0, 0);
+  
+    return eventEnd < new Date();
+  };  
 
   return (
     <div>
@@ -59,9 +72,15 @@ export default function VerticalTimeline({ title, machines = []}) {
 
       {/* Data */}
       <div className="flex items-center justify-center gap-2 mb-4">
-        <Button variant="outline" size="icon" onClick={handlePrevDay}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handlePrevDay}
+          disabled={new Date(selectedDate).toDateString() === new Date().toDateString()}
+        >
           <ChevronLeft className="w-4 h-4" />
         </Button>
+
         <Button className="bg-green-500 hover:bg-green-600 text-white">
           {format(selectedDate, "d MMMM yyyy", { locale: pl })}
         </Button>
@@ -80,12 +99,13 @@ export default function VerticalTimeline({ title, machines = []}) {
             <div className="grid grid-cols-3 gap-2">
               {machines.map((machine) => (
                 <WashingMachineCard
-                  key={machine.id}
-                  name={machine.name}
-                  time={hour}
-                  status={machine.reservations[hour]}
-                  onClick={handleCardClick}
-                />
+                key={machine.id}
+                name={machine.name}
+                time={hour}
+                status={machine.reservations[hour]}
+                selectedDate={selectedDate}
+                onClick={handleCardClick}
+              />              
               ))}
             </div>
           </React.Fragment>
