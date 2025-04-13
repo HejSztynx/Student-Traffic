@@ -55,8 +55,24 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   };
 
   const handlePrevDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() - 86400000));
-  };
+    const prevDate = new Date(selectedDate.getTime() - 86400000)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (prevDate >= today) {
+      setSelectedDate(prevDate)
+    }
+  }
+
+  const isPastTime = (hour) => {
+    const now = new Date();
+  
+    const selected = new Date(selectedDate);
+    const [h, m] = hour.split(":");
+    selected.setHours(h, m, 0, 0);
+  
+    return selected < now;
+  }
+  
 
   const handleNextDay = () => {
     setSelectedDate((prev) => new Date(prev.getTime() + 86400000));
@@ -75,9 +91,14 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
       {/* Wybór daty */}
       <div className="flex flex-col items-center gap-4 mb-6">
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={handlePrevDay}>
-            <ChevronLeft className="w-4 h-4" />
-          </Button>
+          <Button
+          variant="outline"
+          size="icon"
+          onClick={handlePrevDay}
+          disabled={new Date(selectedDate).toDateString() === new Date().toDateString()}
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </Button>
           <Button className="bg-green-500 text-white">
             {format(selectedDate, "d MMMM yyyy", { locale: pl })}
           </Button>
@@ -109,17 +130,25 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
               </div>
               <div className="min-h-[60px]">
                 {reservation ? (
-                  <div
-                    onClick={() => handleCardClick(reservation)}
-                    className="cursor-pointer"
-                  >
-                    <ReservationCard {...reservation} />
-                  </div>
-                ) : (
-                  <div className="h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-sm text-gray-400">
-                    Wolne
-                  </div>
-                )}
+                // Jeśli jest rezerwacja - pokazuj zawsze
+                <div
+                  onClick={() => handleCardClick(reservation)}
+                  className="cursor-pointer"
+                >
+                  <ReservationCard {...reservation} />
+                </div>
+              ) : isPastTime(hour) ? (
+                // Jeśli nie ma rezerwacji i czas minął - pokazuj "Niedostępne"
+                <div className="h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-sm text-gray-400">
+                  Niedostępne
+                </div>
+              ) : (
+                // W innym wypadku pokazuj "Wolne"
+                <div className="h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-sm text-gray-400">
+                  Wolne
+                </div>
+              )}
+
               </div>
             </React.Fragment>
           );
