@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import WashingMachineCard from "./washingMashineCard"
 import ConfirmationDialog from "./confirmDialog"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
+import { ChevronLeft, ChevronRight, ArrowLeft} from "lucide-react"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { toast } from "sonner"
@@ -49,8 +49,17 @@ export default function VerticalTimeline({ title, machines = []}) {
   }
   
   const handleNextDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() + 86400000))
+    const nextDate = new Date(selectedDate.getTime() + 86400000)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+  
+    const maxDate = new Date(today.getTime() + 3 * 86400000) // dzisiaj + 3 dni
+  
+    if (nextDate <= maxDate) {
+      setSelectedDate(nextDate)
+    }
   }
+  
 
   const isPastEvent = (eventDate, endTime) => {
     const [hours, minutes] = endTime.split(":").map(Number);
@@ -84,9 +93,16 @@ export default function VerticalTimeline({ title, machines = []}) {
         <Button className="bg-green-500 hover:bg-green-600 text-white">
           {format(selectedDate, "d MMMM yyyy", { locale: pl })}
         </Button>
-        <Button variant="outline" size="icon" onClick={handleNextDay}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={handleNextDay}
+          disabled={selectedDate.toDateString() === new Date(new Date().getTime() + 3 * 86400000).toDateString()}
+        >
           <ChevronRight className="w-4 h-4" />
         </Button>
+
+
       </div>
 
       {/* Timeline */}

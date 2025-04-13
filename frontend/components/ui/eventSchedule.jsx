@@ -77,8 +77,16 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   };
 
   const handleNextDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() + 86400000));
-  };
+    const nextDate = new Date(selectedDate.getTime() + 86400000)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+  
+    const maxDate = new Date(today.getTime() + 7 * 86400000) // dzisiaj + 3 dni
+  
+    if (nextDate <= maxDate) {
+      setSelectedDate(nextDate)
+    }
+  }
 
   const isPastTime = (hour) => {
     const now = new Date();

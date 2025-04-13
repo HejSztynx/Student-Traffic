@@ -18,19 +18,32 @@ export default function GiveAwayPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+  
+    if (!itemName.trim()) {
+      return toast.error("Musisz podać co oddajesz!")
+    }
+  
+    if (!location.trim()) {
+      return toast.error("Musisz podać miejsce!")
+    }
+  
     const newOffer = {
       itemName,
       exchange,
       description,
       location,
     }
+  
     console.log("Propozycja oddania:", newOffer)
+  
     toast.success("Dodano nową propozycję oddania!")
+  
     setItemName("")
     setExchange("")
     setDescription("")
     setLocation("")
   }
+  
 
   return (
     <div className="w-full px-4 py-6 sm:px-6 md:px-8 lg:px-10 max-w-2xl mx-auto">
