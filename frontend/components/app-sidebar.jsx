@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import useUserStore from "@/lib/store/userStore";
 
 import {
   Sidebar,
@@ -13,6 +14,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { set } from "date-fns";
 
 function SidebarItem({ path, name, isActive }) {
   return (
@@ -29,9 +31,10 @@ function SidebarItem({ path, name, isActive }) {
 export function AppSidebar({ ...props }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { setUser } = useUserStore();
 
   const handleLogout = () => {
-    // Perform logout logic here
+    setUser("", "");
     router.replace("/");
   };
 
