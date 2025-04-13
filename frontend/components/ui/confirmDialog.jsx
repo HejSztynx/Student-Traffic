@@ -1,26 +1,41 @@
-import React from "react"
-import { Button } from "@/components/ui/button"
+"use client";
 
-const ConfirmationDialog = ({ isOpen, onConfirm, onCancel, machineName, time }) => {
-  if (!isOpen) return null // Nie renderujemy, jeśli okno jest zamknięte
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
+export default function ConfirmationDialog({
+  isOpen,
+  onConfirm,
+  onCancel,
+  machineName,
+  time,
+}) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
-        <h2 className="text-xl font-bold mb-4 text-black">
-          Czy potwierdzasz rezerwację {machineName} o godzinie {time}?
-        </h2>
-        <div className="flex justify-between">
-          <Button onClick={onConfirm} className="bg-green-500">
-            TAK
-          </Button>
-          <Button onClick={onCancel} className="bg-red-500">
-            NIE
-          </Button>
-        </div>
-      </div>
-    </div>
-  )
-}
+    <Dialog open={isOpen} onOpenChange={onCancel}>
+      <DialogContent className="sm:max-w-md animate-slideUp">
+        <DialogHeader>
+          <DialogTitle className="text-lg text-center">
+            Czy potwierdzasz rezerwację <br />
+            <span className="font-bold">{machineName}</span> o <b>{time}</b>?
+          </DialogTitle>
+        </DialogHeader>
 
-export default ConfirmationDialog
+        <DialogFooter className="flex justify-between pt-4">
+          <Button variant="outline" onClick={onCancel}>
+            Nie
+          </Button>
+          <Button onClick={onConfirm} className="bg-green-600 text-white">
+            Tak
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,22 +12,37 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
-export default function AddEventModal({ onClose }) {
+const addTwoHours = (start) => {
+  const [h, m] = start.split(":").map(Number);
+  const newHour = h + 2;
+  return `${newHour.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+};
+
+export default function AddEventModal({ onClose, onSubmit, defaultStartTime }) {
   const [title, setTitle] = useState("");
   const [maxParticipants, setMaxParticipants] = useState("");
-  const [startHour, setStartHour] = useState("");
+  const [startHour, setStartHour] = useState(defaultStartTime || "");
   const [endHour, setEndHour] = useState("");
+
+  useEffect(() => {
+    if (defaultStartTime) {
+      setStartHour(defaultStartTime);
+      setEndHour(addTwoHours(defaultStartTime));
+    }
+  }, [defaultStartTime]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const newEvent = {
       title,
-      maxParticipants,
-      startHour,
-      endHour,
+      maxPlayers: parseInt(maxParticipants),
+      currentPlayers: 1,
+      startTime: startHour,
+      endTime: endHour,
     };
-    console.log("Nowy event:", newEvent);
-    onClose();
+
+    onSubmit(newEvent);
   };
 
   return (
@@ -46,6 +61,7 @@ export default function AddEventModal({ onClose }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="np. Wieczorny mecz"
+              required
             />
           </div>
 
@@ -58,34 +74,14 @@ export default function AddEventModal({ onClose }) {
               onChange={(e) => setMaxParticipants(e.target.value)}
               placeholder="np. 12"
               className="w-24"
+              required
             />
           </div>
 
           <div className="space-y-2">
             <Label>Godzina</Label>
-            <div className="flex gap-4">
-              <div className="space-y-1">
-                <Label htmlFor="start">Od</Label>
-                <Input
-                  id="start"
-                  type="text"
-                  placeholder="10:00"
-                  value={startHour}
-                  onChange={(e) => setStartHour(e.target.value)}
-                  className="w-24 text-center"
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="end">Do</Label>
-                <Input
-                  id="end"
-                  type="text"
-                  placeholder="12:00"
-                  value={endHour}
-                  onChange={(e) => setEndHour(e.target.value)}
-                  className="w-24 text-center"
-                />
-              </div>
+            <div className="text-sm text-muted-foreground">
+              {startHour} - {endHour}
             </div>
           </div>
 

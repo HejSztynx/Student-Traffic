@@ -1,123 +1,135 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { pl } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useState } from "react";
-import { toast } from "sonner";
-import ConfirmationDialog from "./confirmDialog";
-import WashingMachineCard from "./washingMashineCard";
+import React, { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import WashingMachineCard from "./washingMashineCard"
+import ConfirmationDialog from "./confirmDialog"
+import { Button } from "@/components/ui/button"
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
+import { format } from "date-fns"
+import { pl } from "date-fns/locale"
+import { toast } from "sonner"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
 
-// Generujemy godziny, co 2 godziny (np. 6:00, 8:00, 10:00, ...)
-const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
+const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`)
 
-export default function VerticalTimeline() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedMachine, setSelectedMachine] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
+export default function WasherTimeline({ title, floor }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  // Maszyny i ich rezerwacje na godzinach
-  const machines = [
-    {
-      id: 1,
-      name: "Pralka 1",
-      reservations: {
-        "6:00": "free",
-        "8:00": "reserved",
-        "10:00": "reserved",
-        "12:00": "free",
-        "14:00": "free",
-        "16:00": "reserved",
-        "18:00": "free",
-        "20:00": "free",
-        "22:00": "free",
-      },
-    },
-    {
-      id: 2,
-      name: "Pralka 2",
-      reservations: {
-        "6:00": "free",
-        "8:00": "free",
-        "10:00": "reserved",
-        "12:00": "reserved",
-        "14:00": "free",
-        "16:00": "free",
-        "18:00": "free",
-        "20:00": "reserved",
-        "22:00": "free",
-      },
-    },
-    {
-      id: 3,
-      name: "Pralka 3",
-      reservations: {
-        "6:00": "reserved",
-        "8:00": "free",
-        "10:00": "free",
-        "12:00": "free",
-        "14:00": "reserved",
-        "16:00": "free",
-        "18:00": "free",
-        "20:00": "free",
-        "22:00": "reserved",
-      },
-    },
-  ];
+  const [machines, setMachines] = useState([])
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedMachine, setSelectedMachine] = useState("")
+  const [selectedTime, setSelectedTime] = useState("")
+  const [selectedDate, setSelectedDate] = useState(new Date())
+
+  const machineType = searchParams.get("machine") || "washer"
+
+  // Fetch machines from API when selectedDate or machineType changes
+  useEffect(() => {
+    const fetchMachines = async () => {
+      const formattedDate = selectedDate.toISOString().split("T")[0] // yyyy-mm-dd
+      const res = await fetch("http://localhost:8080/objects/laundry", {
+        method: "POST",
+        body: JSON.stringify({
+          localDate: formattedDate,
+          floor: Number(floor),
+        })
+      })
+      const data = await res.json()
+      setMachines(data)
+    }
+
+    fetchMachines()
+  }, [selectedDate, machineType, floor])
 
   const handleCardClick = (machineName, time) => {
-    setSelectedMachine(machineName);
-    setSelectedTime(time);
-    setIsDialogOpen(true);
-  };
+    setSelectedMachine(machineName)
+    setSelectedTime(time)
+    setIsDialogOpen(true)
+  }
 
   const handleConfirm = () => {
-    // Logika rezerwacji po potwierdzeniu
-    toast.success(
-      `Rezerwacja potwierdzona dla ${selectedMachine} o godzinie ${selectedTime}`
-    );
-    setIsDialogOpen(false);
-  };
+    toast.success(`Rezerwacja potwierdzona dla ${selectedMachine} o ${selectedTime}`)
+    setIsDialogOpen(false)
+  }
 
-  const handleCancel = () => {
-    setIsDialogOpen(false);
-  };
-
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const handleCancel = () => setIsDialogOpen(false)
 
   const handlePrevDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() - 24 * 60 * 60 * 1000));
-  };
+    const prevDate = new Date(selectedDate)
+    prevDate.setDate(prevDate.getDate() - 1)
+    if (prevDate >= new Date().setHours(0, 0, 0, 0)) {
+      setSelectedDate(prevDate)
+    }
+  }
 
   const handleNextDay = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() + 24 * 60 * 60 * 1000));
-  };
+    const nextDate = new Date(selectedDate)
+    nextDate.setDate(nextDate.getDate() + 1)
+    const maxDate = new Date()
+    maxDate.setDate(maxDate.getDate() + 7)
+    if (nextDate <= maxDate) {
+      setSelectedDate(nextDate)
+    }
+  }
+
+  const isPastEvent = (eventDate, endTime) => {
+    const [h, m] = endTime.split(":").map(Number)
+    const end = new Date(eventDate)
+    end.setHours(h, m, 0, 0)
+    return end < new Date()
+  }
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-2">
-        <Button variant="outline" size="icon" onClick={handlePrevDay}>
+      <div className="flex items-center gap-2 mb-4">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <h1 className="text-lg font-semibold">{title}</h1>
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mb-4">
+        <Button variant="outline" size="icon" onClick={handlePrevDay}
+          disabled={selectedDate.toDateString() === new Date().toDateString()}>
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <Button className="bg-green-500 hover:bg-green-600 text-white">
-          {format(selectedDate, "d MMMM yyyy", { locale: pl })}
-        </Button>
-        <Button variant="outline" size="icon" onClick={handleNextDay}>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button className="bg-green-500 hover:bg-green-600 text-white">
+              {format(selectedDate, "d MMMM yyyy", { locale: pl })}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-0" align="center">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => setSelectedDate(date)}
+              initialFocus
+              disabled={(date) => {
+                const today = new Date()
+                const maxDate = new Date()
+                today.setHours(0, 0, 0, 0)
+                maxDate.setDate(today.getDate() + 8)
+                return date < today || date >= maxDate
+              }}
+            />
+          </PopoverContent>
+        </Popover>
+
+        <Button variant="outline" size="icon" onClick={handleNextDay}
+          disabled={selectedDate.toDateString() === new Date(new Date().getTime() + 7 * 86400000).toDateString()}>
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
 
-      <div className="mb-4"></div>
-
-      <div className="grid grid-cols-[80px_1fr] gap-5 h-[650px] overflow-y-auto">
+      <div className="grid grid-cols-[80px_1fr] gap-5 h-[700px] overflow-y-auto">
         {hours.map((hour) => (
           <React.Fragment key={hour}>
-            <div className="flex items-top justify-end pr-2 text-sm text-gray-500">
-              {hour}
-            </div>
-
-            {/* Kontener z kartami pralek */}
+            <div className="flex items-top justify-end pr-2 text-sm text-gray-500">{hour}</div>
             <div className="grid grid-cols-3 gap-2">
               {machines.map((machine) => (
                 <WashingMachineCard
@@ -125,6 +137,7 @@ export default function VerticalTimeline() {
                   name={machine.name}
                   time={hour}
                   status={machine.reservations[hour]}
+                  selectedDate={selectedDate}
                   onClick={handleCardClick}
                 />
               ))}
@@ -140,5 +153,5 @@ export default function VerticalTimeline() {
         />
       </div>
     </div>
-  );
+  )
 }

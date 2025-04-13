@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import {
   Accordion,
@@ -16,28 +17,38 @@ function LinkedButton({ href, text, className, machine }) {
   }
 
   return (
-    <Button className={cn(className, "m-2 w-[90%]")}>
-      <Link href={url}>{text}</Link>
-    </Button>
+    <Link href={url} className="w-full">
+      <Button
+        variant="ghost"
+        className={cn(
+          className,
+          "w-full justify-between text-base py-6 border-b border-muted"
+        )}
+      >
+        {text}
+        <ChevronRight className="w-4 h-4 text-muted-foreground" />
+      </Button>
+    </Link>
   );
 }
 
 export default function Page() {
   return (
-    <Accordion type="single" collapsible className="w-[85%]">
+    <Accordion type="single" collapsible className="w-[85%] mx-auto">
       <AccordionItem value="dryers">
         <AccordionTrigger>Suszarnia</AccordionTrigger>
         <AccordionContent>
-          {[1, 3, 5, , 7, 9, 11, 13].map((i) => (
+          {[1, 3, 5, 7, 9, 11, 13].map((i) => (
             <LinkedButton
               key={i}
               text={`Suszarnia - piętro ${i}`}
-              href={`/laundry/${i}`}
+              href={`/app/laundry/${i}`}
               machine="dryer"
             />
           ))}
         </AccordionContent>
       </AccordionItem>
+
       <AccordionItem value="washing-machines">
         <AccordionTrigger>Pralnia</AccordionTrigger>
         <AccordionContent>
@@ -45,7 +56,7 @@ export default function Page() {
             <LinkedButton
               key={i}
               text={`Pralnia - piętro ${i}`}
-              href={`/laundry/${i}`}
+              href={`/app/laundry/${i}`}
               machine="washing-machine"
             />
           ))}
@@ -54,3 +65,4 @@ export default function Page() {
     </Accordion>
   );
 }
+

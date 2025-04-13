@@ -1,23 +1,43 @@
 import React from "react"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-const WashingMachineCard = ({ status, name, time, onClick }) => {
-  // Ustal tło na podstawie statusu
-  const bgColor = status === "reserved" ? "bg-red-500" : "bg-green-500"
-  
-  const isDisabled = status === "reserved";
+const WashingMachineCard = ({ status, name, time, onClick, selectedDate }) => {
+  const isReserved = status === "reserved"
+
+  // Sprawdź, czy czas już minął
+  const [hour, minutes] = time.split(":").map(Number)
+  const slotTime = new Date(selectedDate)
+  slotTime.setHours(hour, minutes, 0, 0)
+
+  const now = new Date()
+  const isPast = slotTime < now
 
   return (
-    <Card className={`${bgColor} text-white`}>
-      <CardContent className="p-2">
-        <Button
-          onClick={() => !isDisabled && onClick(name, time)}
-          className="w-full text-[10px]"
-          disabled={isDisabled}
+    <Card
+      onClick={() => !isReserved && !isPast && onClick(name, time)}
+      className={cn(
+        "cursor-pointer transition border-2",
+        isReserved || isPast
+          ? "border-red-500 opacity-60 pointer-events-none"
+          : "border-green-500 hover:shadow-md"
+      )}
+    >
+      <CardContent className="p-4 flex flex-col items-center justify-center gap-1">
+        <div className="text-xs text-muted-foreground">{time}</div>
+        <div className="text-sm font-semibold">{name}</div>
+        <div
+          className={cn(
+            "text-[10px] mt-1",
+            isReserved || isPast ? "text-red-500" : "text-green-500"
+          )}
         >
-        {name}
-        </Button>
+          {isReserved
+            ? "Zajęte"
+            : isPast
+            ? "Czas minął"
+            : "Wolne"}
+        </div>
       </CardContent>
     </Card>
   )
