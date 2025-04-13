@@ -1,8 +1,17 @@
 package com.example.backend.database;
 
 import java.io.InputStream;
+// import java.sql.Timestamp;
+import com.google.cloud.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.example.backend.model.OwnerDto;
+import com.example.backend.model.ReservationDto;
+import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
 import com.google.firebase.FirebaseApp;
@@ -72,6 +81,57 @@ public class DatabaseManager {
         return null;
     }
 
+    public <T> List<T> getDocumentsWhereEqualsTo(
+            String collectionName, String field, Object value, Class<T> type
+    ) {
+        List<T> result = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> future = databaseHandler.collection(collectionName)
+                    .whereEqualTo(field, value)
+                    .get();
+
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+            for (QueryDocumentSnapshot doc : documents) {
+                T obj = doc.toObject(type);
+                result.add(obj);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+
+    public List<ReservationDto> getPralkaReservationsGivenDate(String id, LocalDate localDate) {
+        List<ReservationDto> result = new ArrayList<>();
+        try {
+            ApiFuture<QuerySnapshot> future = databaseHandler.collection("Reservations")
+                    .whereEqualTo("objectId", id)
+                    .whereEqualTo("day", localDate.getDayOfMonth())
+                    .whereEqualTo("month", localDate.getMonthValue())
+                    .whereEqualTo("year", localDate.getYear())
+                    .get();
+
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+            for (QueryDocumentSnapshot doc : documents) {
+                 ReservationDto obj = doc.toObject(ReservationDto.class);
+                result.add(obj);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public List<QueryDocumentSnapshot> getAllDocumentsFromCollection(String collectionName) throws Exception {
+        return databaseHandler.collection(collectionName).get().get().getDocuments();
+    }
 
     public void createDocumentWithData(
             String collectionName, String documentId, Map<String, Object> fieldData
@@ -97,8 +157,12 @@ public class DatabaseManager {
             String collectionName, String documentId, String fieldName, T newFieldData
     ) throws Exception {
         CollectionReference collectionReference = this.databaseHandler.collection(collectionName);
-        if (!collectionReference.document(documentId).get().get().exists()) {
-            collectionReference.document(documentId).update(fieldName, newFieldData);
+        DocumentReference docRef = collectionReference.document(documentId);
+
+        if (docRef.get().get().exists()) {
+            docRef.update(fieldName, newFieldData);
+        } else {
+            throw new Exception("Document with ID " + documentId + " does not exist.");
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.backend.controller;
 
 import com.example.backend.database.DatabaseManager;
 import com.example.backend.dtos.AuthRequest;
+import com.example.backend.model.OwnerDto;
 import com.example.backend.service.LoggingService;
 import com.google.auto.value.AutoAnnotation;
 import lombok.AllArgsConstructor;
@@ -20,12 +21,15 @@ public class LoggingController {
 
 
     @PostMapping("/auth")
-    public ResponseEntity<String> auth(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
         String username = authRequest.username();
         String passedPassword = authRequest.passedPassword();
         try {
             if (loggingService.auth(username, passedPassword)) {
-                return ResponseEntity.ok("Auth successful");
+
+                OwnerDto user = loggingService.getUser(username);
+
+                return ResponseEntity.ok(user);
             } else {
                 return ResponseEntity.badRequest().body("Auth failed");
             }

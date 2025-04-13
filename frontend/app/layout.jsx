@@ -1,5 +1,21 @@
+import { Bell } from "lucide-react";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
+
+import { AppSidebar } from "@/components/app-sidebar";
+import { Button } from "@/components/ui/button";
+import { NotificationBadge } from "@/components/ui/notification-badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+import { DeviceUnavailable } from "@/components/device-unavailable";
+
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +38,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <DeviceUnavailable />
+        <div className="sm:hidden flex flex-col items-center justify-center h-screen p-2">
+          {children}
+        </div>
+        <Toaster richColors closeButton />
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservableObject {
-    private Long id;
+    private String id;
     private String name;
     private ObjectStatus status;
     private ObjectType type;
