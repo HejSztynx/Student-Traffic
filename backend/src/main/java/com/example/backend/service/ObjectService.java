@@ -50,7 +50,8 @@ public class ObjectService {
         for (ReservableObject laundryObject : allLaundry) {
             List<ReservationDto> objectReservations =
                     reservationRepository.getObjectReservationByIdAndDate(laundryObject.getId(), localDate);
-            Map<String, String> map = generateReservationMap(objectReservations, localDate);
+            boolean isDamaged = laundryObject.getStatus() == ObjectStatus.DAMAGED;
+            Map<String, String> map = generateReservationMap(objectReservations, localDate, isDamaged);
             result.add(new LaundryResultDto(laundryObject.getId(), map));
         }
         return result;
@@ -61,7 +62,7 @@ public class ObjectService {
     }
 
     private Map<String, String> generateReservationMap(
-            List<ReservationDto> reservations, LocalDate date) {
+            List<ReservationDto> reservations, LocalDate date, boolean isDamaged) {
 
         List<LocalTime> slots = List.of(
                 LocalTime.of(6, 0),
@@ -81,14 +82,13 @@ public class ObjectService {
             LocalDateTime slotStart = date.atTime(slotTime);
             LocalDateTime slotEnd = slotStart.plusHours(2);
 
+
             boolean isReserved = reservations.stream().anyMatch(res ->
-
-
                     res.getStart() == slotStart.getHour()
             );
 
             String timeKey = slotTime.format(DateTimeFormatter.ofPattern("H:mm"));
-            result.put(timeKey, isReserved ? "reserved" : "free");
+            result.put(timeKey, isDamaged || isReserved ? "reserved" : "free");
         }
 
         return result;
