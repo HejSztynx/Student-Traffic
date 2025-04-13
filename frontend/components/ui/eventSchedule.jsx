@@ -11,11 +11,15 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
+import useUserStore from "@/lib/store/userStore";
 
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
 
+
 export default function VerticalTimeline({ initialReservations = [], title }) {
   const router = useRouter();
+
+  const { username } = useUserStore();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reservations, setReservations] = useState(initialReservations);
@@ -31,7 +35,7 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   );
 
   const handleCardClick = (reservation) => {
-    if (reservation.ownerName === "Tomek") { // Tomek trzeba zmienić na auth
+    if (reservation.ownerName === username) {
       return toast.error("Nie możesz dołączyć do swojego własnego wydarzenia.");
     }
     if (isPastTime(reservation.startTime)) {
@@ -66,7 +70,7 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
       {
         ...newEvent,
         date: selectedDate,
-        ownerName: "Tomek", // auth
+        ownerName: username,
       },
     ]);
     toast.success("Dodano nowy event!");
@@ -98,7 +102,7 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
     if (isPastTime(reservation.startTime)) {
       return toast.error("Nie można usunąć wydarzenia, które już się rozpoczęło.");
     }
-    if (reservation.ownerName !== "Tomek") { // Tomek trzeba zmienić na auth
+    if (reservation.ownerName !== username) {
       return toast.error("Nie możesz usunąć wydarzenia, którego nie stworzyłeś.");
     }
     setEventToRemove(reservation);
