@@ -1,6 +1,7 @@
 package com.example.backend.repository;
 
 import com.example.backend.database.DatabaseManager;
+import com.example.backend.model.ObjectStatus;
 import com.example.backend.model.ObjectType;
 import com.example.backend.model.ReservableObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +31,17 @@ public class ObjectRepository {
         }
         return result;
 
+    }
+
+    public boolean setStatus(String objectId, ObjectStatus objectStatus) {
+        try {
+            dm.updateDocumentFieldWithData(OBJECTS, objectId, "status", objectStatus.toString());
+            System.out.println("Updated object with id = " + objectId + " with status: " + objectStatus);
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean saveObject(ReservableObject object) {
