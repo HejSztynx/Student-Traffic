@@ -24,14 +24,14 @@ export default function GiveAwayPage() {
       location,
     }
     console.log("Propozycja oddania:", newOffer)
-    router.back() // lub zamknięcie przez prop, jeśli używasz jako modal
+    router.back()
   }
 
   return (
     <div className="w-full px-4 py-6 sm:px-6 md:px-8 lg:px-10 max-w-2xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle className="text-green-800 text-2xl text-center">
+          <CardTitle className="text-white-800 text-2xl text-center">
             Nowa propozycja
           </CardTitle>
         </CardHeader>
