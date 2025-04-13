@@ -1,4 +1,7 @@
-import EventSchedule from "@/components/ui/eventSchedule";
+"use client";
+
+import React from "react";
+import VerticalTimeline from "@/components/ui/eventSchedule";
 
 const reservations = [
   {
@@ -8,9 +11,10 @@ const reservations = [
     maxPlayers: 14,
     startTime: "10:00",
     endTime: "12:00",
+    date: new Date("2025-04-14"),
   },
 ];
 
-export default function BasketballPage() {
-  return <EventSchedule reservations={reservations} />;
+export default function VolleyballPage() {
+  return <VerticalTimeline initialReservations={reservations} />;
 }
