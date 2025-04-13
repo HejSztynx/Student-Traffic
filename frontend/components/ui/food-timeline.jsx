@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react"
 
 export default function FoodEventsTimeline({ title }) {
   const router = useRouter()
-  const [events] = useState([]) // statyczna lista, bez daty
+  const [events] = useState([]) // statyczna lista, bez daty a
 
   return (
     <div>
