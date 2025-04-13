@@ -8,13 +8,13 @@ const reservations = [
     title: "Gramy meczycho",
     ownerName: "Kuba",
     currentPlayers: 5,
-    maxPlayers: 14,
+    maxPlayers: 5,
     startTime: "10:00",
     endTime: "12:00",
     date: new Date("2025-04-14"),
   },
 ];
 
-export default function VolleyballPage() {
-  return <VerticalTimeline initialReservations={reservations} />;
+export default function OtherPage() {
+  return <VerticalTimeline initialReservations={reservations} title="🏐 Boisko do siatkówki" />;
 }

@@ -1,17 +1,20 @@
-import EventSchedule from "@/components/ui/eventSchedule";
+"use client";
 
-// Mock rezerwacji
+import React from "react";
+import VerticalTimeline from "@/components/ui/eventSchedule";
+
 const reservations = [
   {
-    title: "Robimy klatę",
-    ownerName: "Tomek",
-    currentPlayers: 2,
-    maxPlayers: 2,
-    startTime: "14:00",
-    endTime: "15:30",
+    title: "Gramy meczycho",
+    ownerName: "Kuba",
+    currentPlayers: 5,
+    maxPlayers: 5,
+    startTime: "10:00",
+    endTime: "12:00",
+    date: new Date("2025-04-14"),
   },
 ];
 
 export default function GymPage() {
-  return <EventSchedule reservations={reservations} />;
+  return <VerticalTimeline initialReservations={reservations} title="🏋️ Siłownia" />;
 }

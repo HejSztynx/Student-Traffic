@@ -1,25 +1,20 @@
-import EventSchedule from "@/components/ui/eventSchedule";
+"use client";
 
-// Mock rezerwacji
+import React from "react";
+import VerticalTimeline from "@/components/ui/eventSchedule";
+
 const reservations = [
   {
     title: "Gramy meczycho",
     ownerName: "Kuba",
     currentPlayers: 5,
-    maxPlayers: 14,
-    startTime: "16:00",
-    endTime: "18:30",
-  },
-  {
-    title: "Trenujemy",
-    ownerName: "Adam",
-    currentPlayers: 4,
-    maxPlayers: 6,
-    startTime: "20:00",
-    endTime: "21:30",
+    maxPlayers: 5,
+    startTime: "10:00",
+    endTime: "12:00",
+    date: new Date("2025-04-14"),
   },
 ];
 
 export default function BasketballPage() {
-  return <EventSchedule reservations={reservations} />;
+  return <VerticalTimeline initialReservations={reservations} title="🏀 Boisko do koszykówki" />;
 }
