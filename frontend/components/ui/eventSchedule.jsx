@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
+import useUserStore from "@/lib/store/userStore";
 
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
 
