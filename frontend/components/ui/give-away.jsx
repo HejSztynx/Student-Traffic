@@ -85,7 +85,7 @@ export default function GiveAwayPage() {
               <Button type="button" variant="outline" onClick={() => router.back()}>
                 Anuluj
               </Button>
-              <Button type="submit" className="bg-green-700 hover:bg-green-800">
+              <Button type="submit" className="bg hover:bg-green-800">
                 Dodaj
               </Button>
             </div>

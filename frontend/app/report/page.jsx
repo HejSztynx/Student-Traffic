@@ -6,6 +6,9 @@ import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+
+
 
 const devices = [
   { id: "pralka", name: "Pralka", icon: "🧺" },
@@ -47,7 +50,7 @@ export default function Page() {
     }
 
     console.log("Zgłoszona awaria:", failureReport)
-
+    toast.success("Awaria zgłoszona pomyślnie")
     setSelectedDevice("")
     setDescription("")
     setLocation("")
