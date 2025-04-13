@@ -57,7 +57,8 @@ public class EventService {
         documentCreationMap.put("year", startTime.year());
         documentCreationMap.put("month", startTime.month());
         documentCreationMap.put("day", startTime.day());
-        documentCreationMap.put("hour", startTime.hour());
+        documentCreationMap.put("startHour", startTime.hour());
+        documentCreationMap.put("endHour", startTime.hour());
         documentCreationMap.put("objectId", objectId);
         documentCreationMap.put("owner", owner);
         documentCreationMap.put("title", title + " - tied reservation");
@@ -127,7 +128,8 @@ public class EventService {
                 creationMap.put("year", startTime.year());
                 creationMap.put("month", startTime.month());
                 creationMap.put("day", startTime.day());
-                creationMap.put("hour", startTime.hour());
+                creationMap.put("startHour", startTime.hour());
+                creationMap.put("endHour", startTime.hour());
                 creationMap.put("title", title);
                 creationMap.put("description", description);
                 creationMap.put("playersNeeded", playersNeeded);
