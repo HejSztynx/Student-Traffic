@@ -31,6 +31,9 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   );
 
   const handleCardClick = (reservation) => {
+    if (reservation.ownerName === "Tomek") { // Tomek trzeba zmienić na auth
+      return toast.error("Nie możesz dołączyć do swojego własnego wydarzenia.");
+    }
     if (isPastTime(reservation.startTime)) {
       return toast.error("Nie możesz dołączyć do wydarzenia, które już się rozpoczęło.");
     }
@@ -94,6 +97,9 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   const handleRemoveEvent = (reservation) => {
     if (isPastTime(reservation.startTime)) {
       return toast.error("Nie można usunąć wydarzenia, które już się rozpoczęło.");
+    }
+    if (reservation.ownerName !== "Tomek") { // Tomek trzeba zmienić na auth
+      return toast.error("Nie możesz usunąć wydarzenia, którego nie stworzyłeś.");
     }
     setEventToRemove(reservation);
     setIsRemoveDialogOpen(true);
