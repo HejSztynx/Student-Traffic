@@ -100,7 +100,8 @@ public class EventService {
                         creationMap.put("year", startTime.year());
                         creationMap.put("month", startTime.month());
                         creationMap.put("day", startTime.day());
-                        creationMap.put("hour", startTime.hour());
+                        creationMap.put("startHour", startTime.hour());
+                        creationMap.put("endHour", endTime.hour());
                         creationMap.put("title", title);
                         creationMap.put("description", description);
                         creationMap.put("playersNeeded", playersNeeded);
