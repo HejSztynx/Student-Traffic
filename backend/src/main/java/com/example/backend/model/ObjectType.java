@@ -6,5 +6,14 @@ public enum ObjectType {
     FOOTBALL,
     BASKETBALL,
     VOLLEYBALL,
-    GYM
+    GYM,
+    NON_EXISTENT;
+
+    public boolean isOfReservableType() {
+        return !(this == NON_EXISTENT);
+    }
+
+    public boolean isEventAdjacent() {
+        return !(this == WASHER || this == DRYER);
+    }
 }
