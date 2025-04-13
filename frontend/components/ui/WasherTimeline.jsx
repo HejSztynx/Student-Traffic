@@ -15,11 +15,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import useUserStore from "@/lib/store/userStore";
 
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`);
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getMachineName(id) {
+  const parts = id.split("-");
+  return `${capitalizeFirstLetter(parts[0])} ${parts[1]}`;
 }
 
 export default function WasherTimeline({ title, floor }) {
@@ -31,6 +37,8 @@ export default function WasherTimeline({ title, floor }) {
   const [selectedMachine, setSelectedMachine] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const {name, surname, id} = useUserStore();
 
   const machineType = searchParams.get("machine") || "washer";
 
@@ -52,10 +60,7 @@ export default function WasherTimeline({ title, floor }) {
 
       data = data.map((machine) => {
         return {
-          name:
-            capitalizeFirstLetter(machine.id.split("-")[0]) +
-            " " +
-            machine.id.split("-")[1],
+          name: getMachineName(machine.id),
           id: machine.id,
           reservations: machine.reservations,
         };
@@ -74,9 +79,38 @@ export default function WasherTimeline({ title, floor }) {
   };
 
   const handleConfirm = () => {
-    toast.success(
-      `Rezerwacja potwierdzona dla ${selectedMachine} o ${selectedTime}`
-    );
+    const reqBody = {
+      objectId: selectedMachine,
+      title: "",
+      ownerDto: {
+        ownerId: id,
+        name: name,
+        surname: surname,
+      },
+      day: Number(selectedDate.toISOString().split("T")[0].split("-")[2]),
+      month: Number(selectedDate.toISOString().split("T")[0].split("-")[1]),
+      year: Number(selectedDate.toISOString().split("T")[0].split("-")[0]),
+      hour: Number(selectedTime.split(":")[0]),
+    }
+
+    console.log(reqBody)
+    try {
+      fetch("http://localhost:8080/reservation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqBody),
+      });
+      
+      toast.success(
+        `Rezerwacja potwierdzona dla ${getMachineName(selectedMachine)} o ${selectedTime}`
+      );
+    } catch (error) {
+      toast.error("Wystąpił błąd podczas rezerwacji.");
+      return;
+    }
+    
     setIsDialogOpen(false);
   };
 
@@ -177,6 +211,7 @@ export default function WasherTimeline({ title, floor }) {
                   status={machine.reservations[hour]}
                   selectedDate={selectedDate}
                   onClick={handleCardClick}
+                  id={machine.id}
                 />
               ))}
             </div>
@@ -186,7 +221,7 @@ export default function WasherTimeline({ title, floor }) {
           isOpen={isDialogOpen}
           onConfirm={handleConfirm}
           onCancel={handleCancel}
-          machineName={selectedMachine}
+          machineName={getMachineName(selectedMachine)}
           time={selectedTime}
         />
       </div>
