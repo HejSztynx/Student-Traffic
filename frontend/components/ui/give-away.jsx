@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner";
 
 export default function GiveAwayPage() {
   const [itemName, setItemName] = useState("")
@@ -24,7 +25,11 @@ export default function GiveAwayPage() {
       location,
     }
     console.log("Propozycja oddania:", newOffer)
-    router.back()
+    toast.success("Dodano nową propozycję oddania!")
+    setItemName("")
+    setExchange("")
+    setDescription("")
+    setLocation("")
   }
 
   return (

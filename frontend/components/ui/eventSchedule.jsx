@@ -7,7 +7,7 @@ import JoinEventModal from "./join-event";
 import AddEventModal from "./add-event";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Plus, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 
@@ -21,25 +21,32 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
+  const [clickedTime, setClickedTime] = useState("");
 
   const filteredReservations = reservations.filter(
-    (res) =>
-      new Date(res.date).toDateString() === selectedDate.toDateString()
+    (res) => new Date(res.date).toDateString() === selectedDate.toDateString()
   );
 
   const handleCardClick = (reservation) => {
     if (isPastTime(reservation.startTime)) {
       return toast.error("Nie możesz dołączyć do wydarzenia, które już się rozpoczęło.");
     }
-    
+
     if (reservation.currentPlayers >= reservation.maxPlayers) {
       return toast.error("Nie można dołączyć, bo brakuje miejsc.");
     }
-  
+
     setSelectedReservation(reservation);
     setIsJoinModalOpen(true);
   };
-  
+
+  const handleEmptySlotClick = (time) => {
+    if (isPastTime(time)) {
+      return toast.error("Nie można zarezerwować slotu w przeszłości.");
+    }
+    setClickedTime(time);
+    setIsAddModalOpen(true);
+  };
 
   const handleConfirmJoin = () => {
     toast.success("Zapisano na event!");
@@ -61,32 +68,29 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   };
 
   const handlePrevDay = () => {
-    const prevDate = new Date(selectedDate.getTime() - 86400000)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const prevDate = new Date(selectedDate.getTime() - 86400000);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     if (prevDate >= today) {
-      setSelectedDate(prevDate)
+      setSelectedDate(prevDate);
     }
-  }
-
-  const isPastTime = (hour) => {
-    const now = new Date();
-  
-    const selected = new Date(selectedDate);
-    const [h, m] = hour.split(":");
-    selected.setHours(h, m, 0, 0);
-  
-    return selected < now;
-  }
-  
+  };
 
   const handleNextDay = () => {
     setSelectedDate((prev) => new Date(prev.getTime() + 86400000));
   };
 
+  const isPastTime = (hour) => {
+    const now = new Date();
+    const selected = new Date(selectedDate);
+    const [h, m] = hour.split(":");
+    selected.setHours(h, m, 0, 0);
+    return selected < now;
+  };
+
   return (
     <div className="relative">
-      {/* Nagłówek z tytułem i strzałką powrotu */}
+      {/* Header with title and back button */}
       <div className="flex items-center gap-2 mb-6">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="w-5 h-5" />
@@ -94,10 +98,9 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
         <h1 className="text-lg font-semibold">{title}</h1>
       </div>
 
-      {/* Wybór daty */}
-      <div className="flex flex-col items-center gap-4 mb-6">
-        <div className="flex items-center gap-2">
-          <Button
+      {/* Date controls */}
+      <div className="flex items-center justify-center gap-2 mb-6">
+        <Button
           variant="outline"
           size="icon"
           onClick={handlePrevDay}
@@ -105,20 +108,11 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
-          <Button className="bg-green-500 text-white">
-            {format(selectedDate, "d MMMM yyyy", { locale: pl })}
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleNextDay}>
-            <ChevronRight className="w-4 h-4" />
-          </Button>
-        </div>
-
-        <Button
-          size="icon"
-          className="bg-black text-white hover:bg-gray-800"
-          onClick={() => setIsAddModalOpen(true)}
-        >
-          <Plus className="w-5 h-5" />
+        <Button className="bg-green-500 text-white">
+          {format(selectedDate, "d MMMM yyyy", { locale: pl })}
+        </Button>
+        <Button variant="outline" size="icon" onClick={handleNextDay}>
+          <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
 
@@ -131,37 +125,34 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
 
           return (
             <React.Fragment key={hour}>
-              <div className="text-right pr-2 text-sm text-gray-500">
-                {hour}
-              </div>
+              <div className="text-right pr-2 text-sm text-gray-500">{hour}</div>
               <div className="min-h-[60px]">
                 {reservation ? (
-                // Jeśli jest rezerwacja - pokazuj zawsze
-                <div
-                  onClick={() => handleCardClick(reservation)}
-                  className="cursor-pointer"
-                >
-                  <ReservationCard {...reservation} />
-                </div>
-              ) : isPastTime(hour) ? (
-                // Jeśli nie ma rezerwacji i czas minął - pokazuj "Niedostępne"
-                <div className="h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-sm text-gray-400">
-                  Niedostępne
-                </div>
-              ) : (
-                // W innym wypadku pokazuj "Wolne"
-                <div className="h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-sm text-gray-400">
-                  Wolne
-                </div>
-              )}
-
+                  <div
+                    onClick={() => handleCardClick(reservation)}
+                    className="cursor-pointer"
+                  >
+                    <ReservationCard {...reservation} />
+                  </div>
+                ) : isPastTime(hour) ? (
+                  <div className="h-full border border-dashed border-red-300 rounded-xl flex items-center justify-center text-sm text-red-500">
+                    Niedostępne
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => handleEmptySlotClick(hour)}
+                    className="h-full border border-dashed border-gray-300 rounded-xl flex items-center justify-center text-sm text-gray-400 hover:bg-gray-100 cursor-pointer"
+                  >
+                    Wolne
+                  </div>
+                )}
               </div>
             </React.Fragment>
           );
         })}
       </div>
 
-      {/* Modale */}
+      {/* Modals */}
       {isJoinModalOpen && (
         <JoinEventModal
           onClose={() => setIsJoinModalOpen(false)}
@@ -175,9 +166,9 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
         <AddEventModal
           onClose={() => setIsAddModalOpen(false)}
           onSubmit={handleAddEvent}
+          defaultStartTime={clickedTime}
         />
       )}
     </div>
   );
 }
-
