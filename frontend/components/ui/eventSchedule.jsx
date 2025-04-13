@@ -28,12 +28,18 @@ export default function VerticalTimeline({ initialReservations = [], title }) {
   );
 
   const handleCardClick = (reservation) => {
+    if (isPastTime(reservation.startTime)) {
+      return toast.error("Nie możesz dołączyć do wydarzenia, które już się rozpoczęło.");
+    }
+    
     if (reservation.currentPlayers >= reservation.maxPlayers) {
       return toast.error("Nie można dołączyć, bo brakuje miejsc.");
     }
+  
     setSelectedReservation(reservation);
     setIsJoinModalOpen(true);
   };
+  
 
   const handleConfirmJoin = () => {
     toast.success("Zapisano na event!");
