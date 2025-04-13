@@ -15,7 +15,7 @@ export default function FootballPage() {
     {
       title: "Robimy klatę",
       ownerName: "Tomek",
-      currentPlayers: 3,
+      currentPlayers: 2,
       maxPlayers: 3,
       startTime: "14:00",
       endTime: "15:30",

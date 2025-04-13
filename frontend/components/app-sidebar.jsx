@@ -13,7 +13,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import ReportFailureModal from "./ui/report-failure";
 
 // This is sample data.
 const data = {
@@ -94,7 +93,6 @@ export function AppSidebar({ ...props }) {
             name="Zgłoś awarię"
             isActive={pathname === "/report"}
           />
-          <ReportFailureModal open={open} onClose={() => setOpen(false)} />
         </SidebarMenu>
         <div className="mt-auto">
           <SidebarItem
