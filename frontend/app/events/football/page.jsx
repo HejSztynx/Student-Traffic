@@ -1,15 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import EventSchedule from "@/components/ui/eventSchedule";
 import AddEventModal from "@/components/ui/add-event";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, ArrowLeft } from "lucide-react";
 
 export default function FootballPage() {
+  const router = useRouter();
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState([
     {
@@ -51,10 +54,8 @@ export default function FootballPage() {
 
   return (
     <main className="min-h-screen px-4 py-6 max-w-md mx-auto">
-      {/* Nagłówek z datą */}
+      {/* Wybór daty */}
       <div className="flex flex-col items-center gap-4 mb-4">
-        <h1 className="text-lg font-semibold">Boisko - Football</h1>
-
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" onClick={handlePrevDay}>
             <ChevronLeft className="w-4 h-4" />
@@ -68,7 +69,7 @@ export default function FootballPage() {
         </div>
       </div>
 
-      {/* Przycisk dodawania eventu */}
+      {/* Dodawanie eventu */}
       <div className="flex justify-center mb-4">
         <Button
           size="icon"
@@ -79,7 +80,7 @@ export default function FootballPage() {
         </Button>
       </div>
 
-      {/* Oś czasu */}
+      {/* Lista eventów */}
       <EventSchedule
         reservations={events}
         selectedDate={selectedDate}
