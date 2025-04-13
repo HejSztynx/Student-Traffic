@@ -32,17 +32,17 @@ public class BackendApplication implements CommandLineRunner {
 
     @Override
     public void run(String[] args) throws Exception {
-        String name = databaseManager.getDocumentData("Users", "46e11608-a5e1-414b-8333-3e2d245677ff", "name");
-        System.out.println(name);
+        // String name = databaseManager.getDocumentData("Users", "46e11608-a5e1-414b-8333-3e2d245677ff", "name");
+        // System.out.println(name);
 
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("name", "Jan");
-        hashMap.put("surname", "Masternak");
-        databaseManager.createDocumentWithData(
-                "Users",
-                "janmast",
-                hashMap
-        );
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//        hashMap.put("name", "Jan");
+//        hashMap.put("surname", "Masternak");
+//        databaseManager.createDocumentWithData(
+//                "Users",
+//                "janmast",
+//                hashMap
+//        );
 
     }
 

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class LoggingController {
 
     @Autowired
-    LoggingService loggingService;
+    private LoggingService loggingService;
 
 
     @PostMapping("/auth")
