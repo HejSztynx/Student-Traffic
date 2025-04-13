@@ -248,6 +248,13 @@ const floorsEven = Array.from({ length: 7 }, (_, i) => (i + 1) * 2)
 const floorsOdd = Array.from({ length: 8 }, (_, i) => i * 2 + 1)
 const allFloors = Array.from({ length: 15 }, (_, i) => i + 1)
 
+const sportsFields = [
+  { name: "Piłka nożna", icon: "⚽" },
+  { name: "Siatkówka", icon: "🏐" },
+  { name: "Koszykówka", icon: "🏀" },
+]
+
+
 export default function Page() {
   const [selectedDevice, setSelectedDevice] = useState("")
   const [description, setDescription] = useState("")
