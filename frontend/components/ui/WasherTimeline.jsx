@@ -1,31 +1,48 @@
 "use client"
 
-import React, { useState } from "react"
-import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import WashingMachineCard from "./washingMashineCard"
 import ConfirmationDialog from "./confirmDialog"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, ArrowLeft} from "lucide-react"
+import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react"
 import { format } from "date-fns"
 import { pl } from "date-fns/locale"
 import { toast } from "sonner"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 
-
-// Godziny co 2h
 const hours = Array.from({ length: 9 }, (_, i) => `${6 + i * 2}:00`)
 
-export default function VerticalTimeline({ title, machines = []}) {
+export default function WasherTimeline({ title, floor }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
 
-  // const [reservations, setReservations] = useState(machines);
+  const [machines, setMachines] = useState([])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedMachine, setSelectedMachine] = useState("")
   const [selectedTime, setSelectedTime] = useState("")
   const [selectedDate, setSelectedDate] = useState(new Date())
 
- 
+  const machineType = searchParams.get("machine") || "washer"
+
+  // Fetch machines from API when selectedDate or machineType changes
+  useEffect(() => {
+    const fetchMachines = async () => {
+      const formattedDate = selectedDate.toISOString().split("T")[0] // yyyy-mm-dd
+      const res = await fetch("http://localhost:8080/objects/laundry", {
+        method: "POST",
+        body: JSON.stringify({
+          localDate: formattedDate,
+          floor: Number(floor),
+        })
+      })
+      const data = await res.json()
+      setMachines(data)
+    }
+
+    fetchMachines()
+  }, [selectedDate, machineType, floor])
 
   const handleCardClick = (machineName, time) => {
     setSelectedMachine(machineName)
@@ -38,43 +55,35 @@ export default function VerticalTimeline({ title, machines = []}) {
     setIsDialogOpen(false)
   }
 
-  const handleCancel = () => {
-    setIsDialogOpen(false)
-  }
+  const handleCancel = () => setIsDialogOpen(false)
 
   const handlePrevDay = () => {
-    const prevDate = new Date(selectedDate.getTime() - 86400000)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    if (prevDate >= today) {
+    const prevDate = new Date(selectedDate)
+    prevDate.setDate(prevDate.getDate() - 1)
+    if (prevDate >= new Date().setHours(0, 0, 0, 0)) {
       setSelectedDate(prevDate)
     }
   }
-  
+
   const handleNextDay = () => {
-    const nextDate = new Date(selectedDate.getTime() + 86400000)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-  
-    const maxDate = new Date(today.getTime() + 8 * 86400000) // dzisiaj + 7 dni
-  
+    const nextDate = new Date(selectedDate)
+    nextDate.setDate(nextDate.getDate() + 1)
+    const maxDate = new Date()
+    maxDate.setDate(maxDate.getDate() + 7)
     if (nextDate <= maxDate) {
       setSelectedDate(nextDate)
     }
   }
-  
 
   const isPastEvent = (eventDate, endTime) => {
-    const [hours, minutes] = endTime.split(":").map(Number);
-    const eventEnd = new Date(eventDate);
-    eventEnd.setHours(hours, minutes, 0, 0);
-  
-    return eventEnd < new Date();
-  };  
+    const [h, m] = endTime.split(":").map(Number)
+    const end = new Date(eventDate)
+    end.setHours(h, m, 0, 0)
+    return end < new Date()
+  }
 
   return (
     <div>
-      {/* Nagłówek z tytułem i strzałką cofania */}
       <div className="flex items-center gap-2 mb-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="w-5 h-5" />
@@ -82,20 +91,11 @@ export default function VerticalTimeline({ title, machines = []}) {
         <h1 className="text-lg font-semibold">{title}</h1>
       </div>
 
-      {/* Data */}
       <div className="flex items-center justify-center gap-2 mb-4">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handlePrevDay}
-          disabled={new Date(selectedDate).toDateString() === new Date().toDateString()}
-        >
+        <Button variant="outline" size="icon" onClick={handlePrevDay}
+          disabled={selectedDate.toDateString() === new Date().toDateString()}>
           <ChevronLeft className="w-4 h-4" />
         </Button>
-
-        {/* <Button className="bg-green-500 hover:bg-green-600 text-white">
-          {format(selectedDate, "d MMMM yyyy", { locale: pl })}
-        </Button> */}
 
         <Popover>
           <PopoverTrigger asChild>
@@ -103,7 +103,6 @@ export default function VerticalTimeline({ title, machines = []}) {
               {format(selectedDate, "d MMMM yyyy", { locale: pl })}
             </Button>
           </PopoverTrigger>
-
           <PopoverContent className="p-0" align="center">
             <Calendar
               mode="single"
@@ -112,55 +111,39 @@ export default function VerticalTimeline({ title, machines = []}) {
               initialFocus
               disabled={(date) => {
                 const today = new Date()
-                today.setHours(0, 0, 0, 0)
-
                 const maxDate = new Date()
+                today.setHours(0, 0, 0, 0)
                 maxDate.setDate(today.getDate() + 8)
-                maxDate.setHours(0, 0, 0, 0)
-
                 return date < today || date >= maxDate
               }}
             />
           </PopoverContent>
         </Popover>
 
-
-
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleNextDay}
-          disabled={selectedDate.toDateString() === new Date(new Date().getTime() + 8 * 86400000).toDateString()}
-        >
+        <Button variant="outline" size="icon" onClick={handleNextDay}
+          disabled={selectedDate.toDateString() === new Date(new Date().getTime() + 7 * 86400000).toDateString()}>
           <ChevronRight className="w-4 h-4" />
         </Button>
-
-
       </div>
 
-      {/* Timeline */}
       <div className="grid grid-cols-[80px_1fr] gap-5 h-[700px] overflow-y-auto">
         {hours.map((hour) => (
           <React.Fragment key={hour}>
-            <div className="flex items-top justify-end pr-2 text-sm text-gray-500">
-              {hour}
-            </div>
+            <div className="flex items-top justify-end pr-2 text-sm text-gray-500">{hour}</div>
             <div className="grid grid-cols-3 gap-2">
               {machines.map((machine) => (
                 <WashingMachineCard
-                key={machine.id}
-                name={machine.name}
-                time={hour}
-                status={machine.reservations[hour]}
-                selectedDate={selectedDate}
-                onClick={handleCardClick}
-              />              
+                  key={machine.id}
+                  name={machine.name}
+                  time={hour}
+                  status={machine.reservations[hour]}
+                  selectedDate={selectedDate}
+                  onClick={handleCardClick}
+                />
               ))}
             </div>
           </React.Fragment>
         ))}
-
-        {/* Modal potwierdzenia */}
         <ConfirmationDialog
           isOpen={isDialogOpen}
           onConfirm={handleConfirm}
@@ -172,4 +155,3 @@ export default function VerticalTimeline({ title, machines = []}) {
     </div>
   )
 }
-

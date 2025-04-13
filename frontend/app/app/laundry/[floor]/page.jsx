@@ -61,9 +61,9 @@ export default async function Page({ params, searchParams }) {
       </h1>
   
       {machine === "dryer" ? (
-        <WasherTimeline machines={machines} title="Suszarnia" />
+        <WasherTimeline title="Suszarnia" floor={floor} />
       ) : (
-        <WasherTimeline machines={machines} title="Pralnia" />
+        <WasherTimeline title="Pralnia" floor={floor} />
       )}
     </>
   );
