@@ -34,7 +34,7 @@ export function AppSidebar({ ...props }) {
   const { setUser } = useUserStore();
 
   const handleLogout = () => {
-    setUser("", "");
+    setUser("", "", "", "");
     router.replace("/");
   };
 
