@@ -7,44 +7,13 @@ import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Pralnia / Suszarnia",
-          url: "/laundry",
-        },
-        {
-          title: "Eventy",
-          url: "/events",
-        },
-        {
-          title: "Oddaj Zywność",
-          url: "/food",
-        },
-        {
-          title: "Wyloguj się",
-          url: "/logout",
-        },
-        {
-          title: "Zgłoś awarię",
-          url: "/report",
-        }
-      ],
-    },
-  ],
-};
 
 function SidebarItem({ path, name, isActive }) {
   return (
@@ -94,13 +63,13 @@ export function AppSidebar({ ...props }) {
             isActive={pathname === "/report"}
           />
         </SidebarMenu>
-        <div className="mt-auto">
-          <SidebarItem
-            path="/logout"
-            name="Wyloguj się"
-            isActive={pathname === "/logout"}
-          />
-        </div>
+        <SidebarFooter>
+          <Link href="/logout">
+            <SidebarMenuButton className="h-16 text-xl" >
+              Wyloguj się
+            </SidebarMenuButton>
+          </Link>
+        </SidebarFooter>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

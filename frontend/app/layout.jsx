@@ -65,7 +65,7 @@ export default function RootLayout({ children }) {
             </div>
           </SidebarInset>
         </SidebarProvider>
-        <Toaster richColors />
+        <Toaster richColors closeButton />
       </body>
     </html>
   );
