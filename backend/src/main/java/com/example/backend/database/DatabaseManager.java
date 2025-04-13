@@ -112,28 +112,13 @@ public class DatabaseManager {
                     .whereEqualTo("day", localDate.getDayOfMonth())
                     .whereEqualTo("month", localDate.getMonthValue())
                     .whereEqualTo("year", localDate.getYear())
-//                    .where(Filter.or(
-//                            Filter.greaterThanOrEqualTo("start", Timestamp.parseTimestamp(localDate.atStartOfDay().toString())),
-//                            Filter.lessThan("start", Timestamp.parseTimestamp(localDate.atTime(LocalTime.MAX).toString()))
-//                    ))
-//                    .whereGreaterThanOrEqualTo("start", Timestamp.valueOf(localDate.atStartOfDay()))
-//                    .whereLessThan("start", Timestamp.valueOf(localDate.atTime(LocalTime.MAX)))
                     .get();
 
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
             for (QueryDocumentSnapshot doc : documents) {
                  ReservationDto obj = doc.toObject(ReservationDto.class);
-//                OwnerDto ownerDto = new OwnerDto(
-//                        doc.getString("ownerId"),
-//                        doc.getString("name"),
-//                        doc.getString("surname")
-//                );
-//                ReservationDto obj = new ReservationDto(
-//
-//                );
                 result.add(obj);
-                System.out.println("dupa " + obj);
             }
 
         } catch (Exception e) {
