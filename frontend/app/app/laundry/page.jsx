@@ -42,7 +42,7 @@ export default function Page() {
             <LinkedButton
               key={i}
               text={`Suszarnia - piętro ${i}`}
-              href={`/laundry/${i}`}
+              href={`/app/laundry/${i}`}
               machine="dryer"
             />
           ))}
@@ -56,7 +56,7 @@ export default function Page() {
             <LinkedButton
               key={i}
               text={`Pralnia - piętro ${i}`}
-              href={`/laundry/${i}`}
+              href={`/app/laundry/${i}`}
               machine="washing-machine"
             />
           ))}

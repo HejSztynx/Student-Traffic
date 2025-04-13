@@ -14,7 +14,7 @@ import {
 
 import { DeviceUnavailable } from "@/components/device-unavailable";
 
-import "./globals.css";
+// import "../globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -34,16 +34,31 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <DeviceUnavailable />
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <NotificationBadge
+            className="ml-auto"
+            label="12"
+            variant="destructive"
+          >
+            <Link href={"/app/notifications"}>
+              <Button type="button" variant="ghost">
+                <Bell />
+              </Button>
+            </Link>
+          </NotificationBadge>
+        </header>
         <div className="sm:hidden flex flex-col items-center justify-center h-screen p-2">
           {children}
         </div>
-        <Toaster richColors closeButton />
-      </body>
-    </html>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
