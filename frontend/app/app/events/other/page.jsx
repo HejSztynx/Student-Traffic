@@ -1,20 +1,11 @@
-"use client";
+'use client'
 
-import React from "react";
-import VerticalTimeline from "@/components/ui/eventSchedule";
+import OtherEventsTimeline from "@/components/ui/other-events-timeline"
 
-const reservations = [
-  {
-    title: "Gramy meczycho",
-    ownerName: "Kuba",
-    currentPlayers: 5,
-    maxPlayers: 5,
-    startTime: "10:00",
-    endTime: "12:00",
-    date: new Date("2025-04-14"),
-  },
-];
-
-export default function OtherPage() {
-  return <VerticalTimeline initialReservations={reservations} title="🎉 Inne wydarzenia" />;
+export default function Page() {
+  return (
+    <main className="min-h-screen px-4 py-6 max-w-md mx-auto">
+      <OtherEventsTimeline title="Inne wydarzenia" />
+    </main>
+  )
 }
