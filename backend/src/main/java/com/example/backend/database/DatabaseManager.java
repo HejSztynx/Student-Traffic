@@ -1,7 +1,6 @@
 package com.example.backend.database;
 
 import java.io.InputStream;
-// import java.sql.Timestamp;
 import com.google.cloud.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -112,26 +111,12 @@ public class DatabaseManager {
                     .whereEqualTo("day", localDate.getDayOfMonth())
                     .whereEqualTo("month", localDate.getMonthValue())
                     .whereEqualTo("year", localDate.getYear())
-//                    .where(Filter.or(
-//                            Filter.greaterThanOrEqualTo("start", Timestamp.parseTimestamp(localDate.atStartOfDay().toString())),
-//                            Filter.lessThan("start", Timestamp.parseTimestamp(localDate.atTime(LocalTime.MAX).toString()))
-//                    ))
-//                    .whereGreaterThanOrEqualTo("start", Timestamp.valueOf(localDate.atStartOfDay()))
-//                    .whereLessThan("start", Timestamp.valueOf(localDate.atTime(LocalTime.MAX)))
-                    .get();
+                   .get();
 
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
             for (QueryDocumentSnapshot doc : documents) {
                  ReservationDto obj = doc.toObject(ReservationDto.class);
-//                OwnerDto ownerDto = new OwnerDto(
-//                        doc.getString("ownerId"),
-//                        doc.getString("name"),
-//                        doc.getString("surname")
-//                );
-//                ReservationDto obj = new ReservationDto(
-//
-//                );
                 result.add(obj);
                 System.out.println("dupa " + obj);
             }

@@ -2,11 +2,6 @@ import React from "react";
 import { Badge } from "./badge";
 import { cn } from "@/lib/utils";
 
-// export interface NotificationBadgeProps extends BadgeProps {
-//   label?: string | number;
-//   show?: boolean;
-// }
-
 export const NotificationBadge = ({
   label,
   className,

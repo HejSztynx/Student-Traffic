@@ -46,7 +46,7 @@ export default function WasherTimeline({ title, floor }) {
   useEffect(() => {
     const fetchMachines = async () => {
       const formattedDate = selectedDate.toISOString().split("T")[0]; // yyyy-mm-dd
-      const res = await fetch("http://localhost:8080/objects/laundry", {
+      const res = await fetch("https://hackathon-backend-hdry.onrender.com/objects/laundry", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export default function WasherTimeline({ title, floor }) {
 
     console.log(reqBody)
     try {
-      const response = await fetch("http://localhost:8080/reservation", {
+      const response = await fetch("https://hackathon-backend-hdry.onrender.com/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

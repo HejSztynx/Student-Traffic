@@ -24,7 +24,7 @@ export default function LoginPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/login/auth", {
+      const res = await fetch("https://hackathon-backend-hdry.onrender.com/login/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

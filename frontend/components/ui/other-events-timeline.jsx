@@ -30,12 +30,6 @@ export default function OtherEventsTimeline({ title }) {
 
   const handleNextDay = () => {
     const nextDate = new Date(selectedDate.getTime() + 86400000)
-    // const today = new Date()
-    // today.setHours(0, 0, 0, 0)
-    // const maxDate = new Date(today.getTime() + 7 * 86400000)
-    // if (nextDate <= maxDate) {
-    //   setSelectedDate(nextDate)
-    // }
     setSelectedDate(nextDate)
   }
 
@@ -104,10 +98,6 @@ export default function OtherEventsTimeline({ title }) {
           variant="outline"
           size="icon"
           onClick={handleNextDay}
-        //   disabled={
-        //     selectedDate.toDateString() ===
-        //     new Date(new Date().getTime() + 10 * 86400000).toDateString()
-        //   }
         >
           <ChevronRight className="w-4 h-4" />
         </Button>

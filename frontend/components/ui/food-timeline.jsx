@@ -13,7 +13,7 @@ export default function FoodEventsTimeline({ title }) {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch("http://localhost:8080/announcements")
+        const res = await fetch("https://hackathon-backend-hdry.onrender.com/announcements")
 
         if (!res.ok) {
           throw new Error("Błąd podczas pobierania ogłoszeń")

@@ -28,7 +28,7 @@ export default function GiveAwayPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/announcements/post", {
+      const res = await fetch("https://hackathon-backend-hdry.onrender.com/announcements/post", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
