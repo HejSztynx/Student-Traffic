@@ -95,7 +95,7 @@ export default function WasherTimeline({ title, floor }) {
 
     console.log(reqBody)
     try {
-      fetch("http://localhost:8080/reservation", {
+      const response = await fetch("http://localhost:8080/reservation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
