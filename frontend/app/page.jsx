@@ -24,25 +24,24 @@ export default function LoginPage() {
     }
 
     try {
-      // const res = await fetch("http://localhost:8080/login/auth", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ username: username, passedPassword: password }),
-      // });
+      const res = await fetch("https://hackathon-backend-hdry.onrender.com/login/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: username, passedPassword: password }),
+      });
 
-      // if (!res.ok) {
-      //   const errorText = await res.text();
-      //   toast.error("Błąd logowania: " + errorText);
-      //   return;
-      // }
+      if (!res.ok) {
+        const errorText = await res.text();
+        toast.error("Błąd logowania: " + errorText);
+        return;
+      }
 
-      // const data = await res.json();
+      const data = await res.json();
       toast.success("Zalogowano pomyślnie!");
 
-      // setUser(username, data.id);
-      setUser(username, "2137");
+      setUser(username, data.ownerId, data.name, data.surname);
 
       router.push("/app");
     } catch (err) {

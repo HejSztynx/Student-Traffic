@@ -1,7 +1,6 @@
 package com.example.backend.database;
 
 import java.io.InputStream;
-// import java.sql.Timestamp;
 import com.google.cloud.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -175,25 +174,6 @@ public class DatabaseManager {
             collectionReference.document(documentId).set(fieldData);
         }
     }
-
-
-//    public <T> List<T> getDocumentsWhereEqualsTo(
-//            String collectionName, String field, Object value, Class<T> type
-//    ) throws Exception {
-//        List<T> result = new ArrayList<>();
-//        ApiFuture<QuerySnapshot> future = databaseHandler.collection(collectionName)
-//                .whereEqualTo(field, value)
-//                .get();
-//
-//        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-//
-//        for (QueryDocumentSnapshot doc : documents) {
-//            T obj = doc.toObject(type);
-//            result.add(obj);
-//        }
-//
-//        return result;
-//    }
 
     public <T> Query getDocumentsWhereFieldsEqualTo(
             String collectionName, String field, T desiredFieldValue

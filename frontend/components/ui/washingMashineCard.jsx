@@ -2,7 +2,7 @@ import React from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
-const WashingMachineCard = ({ status, name, time, onClick, selectedDate }) => {
+const WashingMachineCard = ({ status, name, time, onClick, selectedDate, id }) => {
   const isReserved = status === "reserved"
 
   // Sprawdź, czy czas już minął
@@ -15,7 +15,7 @@ const WashingMachineCard = ({ status, name, time, onClick, selectedDate }) => {
 
   return (
     <Card
-      onClick={() => !isReserved && !isPast && onClick(name, time)}
+      onClick={() => !isReserved && !isPast && onClick(id, time)}
       className={cn(
         "cursor-pointer transition border-2",
         isReserved || isPast

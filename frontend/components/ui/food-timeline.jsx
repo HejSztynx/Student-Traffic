@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -8,7 +8,26 @@ import { ArrowLeft } from "lucide-react"
 
 export default function FoodEventsTimeline({ title }) {
   const router = useRouter()
-  const [events] = useState([]) // statyczna lista, bez daty a
+  const [events, setEvents] = useState([])
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch("https://hackathon-backend-hdry.onrender.com/announcements")
+
+        if (!res.ok) {
+          throw new Error("Błąd podczas pobierania ogłoszeń")
+        }
+
+        const data = await res.json()
+        setEvents(data)
+      } catch (error) {
+        console.error("Błąd:", error)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   return (
     <div>
@@ -29,7 +48,8 @@ export default function FoodEventsTimeline({ title }) {
             <Card key={idx}>
               <CardContent className="p-4">
                 <div className="font-semibold text-sm">
-                  {event.time} - {event.title}
+                  {event.offeredItem}
+                  {event.price && ` - ${event.price}`}
                 </div>
                 {event.location && (
                   <div className="text-xs text-muted-foreground">

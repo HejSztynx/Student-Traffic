@@ -16,34 +16,46 @@ export default function GiveAwayPage() {
   const [location, setLocation] = useState("")
   const router = useRouter()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-  
+
     if (!itemName.trim()) {
       return toast.error("Musisz podać co oddajesz!")
     }
-  
+
     if (!location.trim()) {
       return toast.error("Musisz podać miejsce!")
     }
-  
-    const newOffer = {
-      itemName,
-      exchange,
-      description,
-      location,
+
+    try {
+      const res = await fetch("https://hackathon-backend-hdry.onrender.com/announcements/post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          offeredItem: itemName,
+          location: location,
+          price: exchange,
+          description: description,
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error("Coś poszło nie tak przy wysyłaniu!")
+      }
+
+      toast.success("Pomyślnie dodano ogłoszenie!")
+
+      setItemName("")
+      setExchange("")
+      setDescription("")
+      setLocation("")
+    } catch (error) {
+      console.error(error)
+      toast.error("Błąd podczas wysyłania ogłoszenia!")
     }
-  
-    console.log("Propozycja oddania:", newOffer)
-  
-    toast.success("Dodano nową propozycję oddania!")
-  
-    setItemName("")
-    setExchange("")
-    setDescription("")
-    setLocation("")
   }
-  
 
   return (
     <div className="w-full px-4 py-6 sm:px-6 md:px-8 lg:px-10 max-w-2xl mx-auto">
@@ -103,7 +115,11 @@ export default function GiveAwayPage() {
               <Button type="button" variant="outline" onClick={() => router.back()}>
                 Anuluj
               </Button>
-              <Button type="submit" className="bg hover:bg-green-800">
+              <Button
+                type="submit"
+                className="bg hover:bg-green-800"
+                disabled={!itemName.trim() || !location.trim()}
+              >
                 Dodaj
               </Button>
             </div>
