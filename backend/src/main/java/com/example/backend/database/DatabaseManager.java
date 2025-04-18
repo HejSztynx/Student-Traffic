@@ -44,6 +44,7 @@ public class DatabaseManager {
     }
 
 
+
     public boolean doesDocumentExist(
             String collectionName, String documentId
     )  {
@@ -111,14 +112,13 @@ public class DatabaseManager {
                     .whereEqualTo("day", localDate.getDayOfMonth())
                     .whereEqualTo("month", localDate.getMonthValue())
                     .whereEqualTo("year", localDate.getYear())
-                   .get();
+                    .get();
 
             List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
             for (QueryDocumentSnapshot doc : documents) {
                  ReservationDto obj = doc.toObject(ReservationDto.class);
                 result.add(obj);
-                System.out.println("dupa " + obj);
             }
 
         } catch (Exception e) {
@@ -174,4 +174,15 @@ public class DatabaseManager {
             collectionReference.document(documentId).set(fieldData);
         }
     }
+
+    public <T> Query getDocumentsWhereFieldsEqualTo(
+            String collectionName, String field, T desiredFieldValue
+    ) throws Exception {
+        CollectionReference collectionReference = databaseHandler.collection(collectionName);
+
+        return collectionReference.whereEqualTo(field, desiredFieldValue);
+
+    }
+
+
 }

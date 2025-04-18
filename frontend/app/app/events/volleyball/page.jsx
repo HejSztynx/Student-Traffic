@@ -16,5 +16,5 @@ const reservations = [
 ];
 
 export default function OtherPage() {
-  return <VerticalTimeline initialReservations={reservations} title="🏐 Boisko do siatkówki" />;
+  return <VerticalTimeline initialReservations={reservations} title="VOLLEYBALL" />;
 }
