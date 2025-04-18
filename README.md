@@ -103,3 +103,26 @@ Inni członkowie zespołu zgłosili jeszcze inne potencjalne problemy z projekte
 jak powinien wyglądać schemat bazy w dalszej części projektu.
 
 Co do drugiej kwestii postanowiono, że springowym backendem od tej pory będzie zajmować się przynajmniej jedna dodatkowa osoba z zespołu, która jest z tematem dobrze zaznajomiona.
+
+---
+
+## Jak uruchomić projekt lokalnie? 🖥
+
+Należy zainstalować następujące narzędzia:
+
+- [Node.js](https://nodejs.org/en/download/) (wraz z `npm`) - przetestowane na wersji `v22.14.0 (LTS)`
+
+Następnie należy przejść do katalogu `frontend` i wykonać tam następujące polecenia:
+
+```bash
+npm install --legacy-peer-deps
+npm run dev
+```
+
+Aplikacja powinna być dostępna pod adresem `http://localhost:3000`.
+
+Naszym oczom ukaże się napis "This app is only available on mobile." - należy zmniejszyć okno przeglądarki, aby wymusić widok mobilny.
+
+Jeśli wszystko poszło dobrze, powinniśmy zobaczyć ekran logowania. Jako nazwę użytkownika należy wpisać `test`, a jako hasło `test1234`.
+
+Ze względu na darmowy hosting, pierwsze wywołanie API może zająć nawet 90 sekund.
