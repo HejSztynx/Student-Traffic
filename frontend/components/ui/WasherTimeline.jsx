@@ -78,7 +78,7 @@ export default function WasherTimeline({ title, floor }) {
     setIsDialogOpen(true);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     const reqBody = {
       objectId: selectedMachine,
       title: "",
